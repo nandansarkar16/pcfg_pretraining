@@ -1,0 +1,576 @@
+/data/cl/u/nsarkar/miniconda/envs/litgpt/lib/python3.11/site-packages/lightning/fabric/plugins/environments/slurm.py:204: The `srun` command is available on your system but is not used. HINT: If your intention is to run Lightning on SLURM, prepend your python command with `srun` like so: srun python /data/cl/u/nsarkar/miniconda/envs/litgpt/bin/litgpt  ...
+Using bfloat16 Automatic Mixed Precision (AMP)
+wandb: Currently logged in as: nandan-sarkar (pcfg_pretrain). Use `wandb login --relogin` to force relogin
+wandb: wandb version 0.17.4 is available!  To upgrade, please run:
+wandb:  $ pip install wandb --upgrade
+wandb: Tracking run with wandb version 0.17.2
+wandb: Run data is saved locally in ./wandb/run-20240708_104134-kr2o1a0p
+wandb: Run `wandb offline` to turn off syncing.
+wandb: Syncing run jumping-yogurt-135
+wandb: ⭐️ View project at https://wandb.ai/pcfg_pretrain/pretrain-
+wandb: 🚀 View run at https://wandb.ai/pcfg_pretrain/pretrain-/runs/kr2o1a0p
+[rank: 0] Seed set to 42
+{'data': {'batch_size': 1,
+          'max_seq_length': -1,
+          'num_workers': 4,
+          'seed': 42,
+          'tokenizer': None,
+          'train_data_path': PosixPath('/data/cl/u/nsarkar/generated_data/pcfg/10M_tokens'),
+          'val_data_path': PosixPath('/data/cl/u/nsarkar/BabyLM_cleaned/val_set')},
+ 'devices': 1,
+ 'eval': {'final_validation': True,
+          'initial_validation': True,
+          'interval': 100,
+          'max_iters': 100,
+          'max_new_tokens': None},
+ 'initial_checkpoint_dir': None,
+ 'logger_name': 'wandb',
+ 'model_config': {'bias': True,
+                  'block_size': 1024,
+                  'gelu_approximate': 'none',
+                  'head_size': 32,
+                  'hf_config': {},
+                  'intermediate_size': 1024,
+                  'lm_head_bias': False,
+                  'mlp_class_name': 'LLaMAMLP',
+                  'n_embd': 128,
+                  'n_expert': 0,
+                  'n_expert_per_token': 0,
+                  'n_head': 4,
+                  'n_layer': 6,
+                  'n_query_groups': 4,
+                  'name': '',
+                  'norm_class_name': 'RMSNorm',
+                  'norm_eps': 1e-05,
+                  'padded_vocab_size': 50304,
+                  'padding_multiple': 512,
+                  'parallel_residual': True,
+                  'rope_base': 10000,
+                  'rope_condense_ratio': 1,
+                  'rotary_percentage': 1.0,
+                  'scale_embeddings': False,
+                  'shared_attention_norm': False,
+                  'vocab_size': 50254},
+ 'model_name': 'custom-lm_15_6M_on_pcfg_10',
+ 'optimizer': "{'class_path': 'torch.optim.AdamW', 'init_args': {'lr': 0.001, "
+              "'weight_decay': 0.01, 'betas': [0.9, 0.95]}}",
+ 'out_dir': PosixPath('out/pretrain/custom-lm_15_6M_on_pcfg_10'),
+ 'precision': None,
+ 'resume': False,
+ 'seed': 42,
+ 'tokenizer_dir': PosixPath('/data/cl/u/nsarkar/litgpt/checkpoints/openai-community/gpt2'),
+ 'train': {'epochs': None,
+           'global_batch_size': 16,
+           'log_interval': 10,
+           'lr_warmup_fraction': None,
+           'lr_warmup_steps': 350,
+           'max_norm': 1.0,
+           'max_seq_length': None,
+           'max_steps': None,
+           'max_tokens': 60000024,
+           'micro_batch_size': 16,
+           'min_lr': 4e-05,
+           'save_interval': 1000,
+           'tie_embeddings': False}}
+Time to instantiate model: 0.52 seconds.
+Total parameters: 15,648,128
+Validating ...
+Measured TFLOPs: 1.06
+Epoch 1 | iter 10 step 10 | loss train: 10.831, val: 11.043 | iter time: 93.38 ms (step) remaining time: 1:16:50
+Epoch 1 | iter 20 step 20 | loss train: 10.406, val: 11.043 | iter time: 93.35 ms (step) remaining time: 0:41:06
+Epoch 1 | iter 30 step 30 | loss train: 9.988, val: 11.043 | iter time: 93.23 ms (step) remaining time: 0:29:11
+Epoch 1 | iter 40 step 40 | loss train: 9.684, val: 11.043 | iter time: 93.51 ms (step) remaining time: 0:23:13
+Epoch 1 | iter 50 step 50 | loss train: 9.392, val: 11.043 | iter time: 93.41 ms (step) remaining time: 0:19:38
+Epoch 1 | iter 60 step 60 | loss train: 9.055, val: 11.043 | iter time: 93.35 ms (step) remaining time: 0:17:14
+Epoch 1 | iter 70 step 70 | loss train: 8.770, val: 11.043 | iter time: 93.92 ms (step) remaining time: 0:15:31
+Epoch 1 | iter 80 step 80 | loss train: 8.409, val: 11.043 | iter time: 93.34 ms (step) remaining time: 0:14:14
+Epoch 1 | iter 90 step 90 | loss train: 8.071, val: 11.043 | iter time: 93.37 ms (step) remaining time: 0:13:13
+Epoch 1 | iter 100 step 100 | loss train: 7.657, val: 11.043 | iter time: 93.35 ms (step) remaining time: 0:12:25
+Validating ...
+iter 100: val loss 8.0437, val time: 3522.00 ms
+Epoch 1 | iter 110 step 110 | loss train: 7.240, val: 8.044 | iter time: 93.40 ms (step) remaining time: 0:13:39
+Epoch 1 | iter 120 step 120 | loss train: 6.902, val: 8.044 | iter time: 93.44 ms (step) remaining time: 0:12:56
+Epoch 1 | iter 130 step 130 | loss train: 6.564, val: 8.044 | iter time: 93.50 ms (step) remaining time: 0:12:19
+Epoch 1 | iter 140 step 140 | loss train: 6.360, val: 8.044 | iter time: 93.47 ms (step) remaining time: 0:11:47
+Epoch 1 | iter 150 step 150 | loss train: 6.176, val: 8.044 | iter time: 93.38 ms (step) remaining time: 0:11:20
+Epoch 1 | iter 160 step 160 | loss train: 5.987, val: 8.044 | iter time: 93.32 ms (step) remaining time: 0:10:56
+Epoch 1 | iter 170 step 170 | loss train: 5.822, val: 8.044 | iter time: 93.27 ms (step) remaining time: 0:10:34
+Epoch 1 | iter 180 step 180 | loss train: 5.752, val: 8.044 | iter time: 93.42 ms (step) remaining time: 0:10:15
+Epoch 1 | iter 190 step 190 | loss train: 5.739, val: 8.044 | iter time: 93.45 ms (step) remaining time: 0:09:58
+Epoch 1 | iter 200 step 200 | loss train: 5.655, val: 8.044 | iter time: 93.42 ms (step) remaining time: 0:09:42
+Validating ...
+iter 200: val loss 6.2862, val time: 3517.68 ms
+Epoch 1 | iter 210 step 210 | loss train: 5.569, val: 6.286 | iter time: 93.72 ms (step) remaining time: 0:10:26
+Epoch 1 | iter 220 step 220 | loss train: 5.473, val: 6.286 | iter time: 93.43 ms (step) remaining time: 0:10:10
+Epoch 1 | iter 230 step 230 | loss train: 5.419, val: 6.286 | iter time: 93.42 ms (step) remaining time: 0:09:55
+Epoch 1 | iter 240 step 240 | loss train: 5.398, val: 6.286 | iter time: 93.45 ms (step) remaining time: 0:09:42
+Epoch 1 | iter 250 step 250 | loss train: 5.352, val: 6.286 | iter time: 93.42 ms (step) remaining time: 0:09:30
+Epoch 1 | iter 260 step 260 | loss train: 5.362, val: 6.286 | iter time: 93.41 ms (step) remaining time: 0:09:18
+Epoch 1 | iter 270 step 270 | loss train: 5.347, val: 6.286 | iter time: 93.33 ms (step) remaining time: 0:09:08
+Epoch 1 | iter 280 step 280 | loss train: 5.295, val: 6.286 | iter time: 93.51 ms (step) remaining time: 0:08:58
+Epoch 1 | iter 290 step 290 | loss train: 5.284, val: 6.286 | iter time: 93.33 ms (step) remaining time: 0:08:48
+Epoch 1 | iter 300 step 300 | loss train: 5.244, val: 6.286 | iter time: 93.42 ms (step) remaining time: 0:08:39
+Validating ...
+iter 300: val loss 5.9854, val time: 3517.03 ms
+Epoch 1 | iter 310 step 310 | loss train: 5.284, val: 5.985 | iter time: 93.57 ms (step) remaining time: 0:09:09
+Epoch 1 | iter 320 step 320 | loss train: 5.201, val: 5.985 | iter time: 93.54 ms (step) remaining time: 0:09:00
+Epoch 1 | iter 330 step 330 | loss train: 5.155, val: 5.985 | iter time: 93.47 ms (step) remaining time: 0:08:51
+Epoch 1 | iter 340 step 340 | loss train: 5.192, val: 5.985 | iter time: 93.50 ms (step) remaining time: 0:08:43
+Epoch 1 | iter 350 step 350 | loss train: 5.222, val: 5.985 | iter time: 93.52 ms (step) remaining time: 0:08:35
+Epoch 1 | iter 360 step 360 | loss train: 5.217, val: 5.985 | iter time: 93.50 ms (step) remaining time: 0:08:28
+Epoch 1 | iter 370 step 370 | loss train: 5.086, val: 5.985 | iter time: 93.31 ms (step) remaining time: 0:08:21
+Epoch 1 | iter 380 step 380 | loss train: 5.109, val: 5.985 | iter time: 93.24 ms (step) remaining time: 0:08:14
+Epoch 1 | iter 390 step 390 | loss train: 5.154, val: 5.985 | iter time: 93.15 ms (step) remaining time: 0:08:08
+Epoch 1 | iter 400 step 400 | loss train: 5.166, val: 5.985 | iter time: 93.32 ms (step) remaining time: 0:08:02
+Validating ...
+iter 400: val loss 5.8888, val time: 3538.02 ms
+Epoch 1 | iter 410 step 410 | loss train: 5.139, val: 5.889 | iter time: 93.35 ms (step) remaining time: 0:08:24
+Epoch 1 | iter 420 step 420 | loss train: 5.067, val: 5.889 | iter time: 93.84 ms (step) remaining time: 0:08:17
+Epoch 1 | iter 430 step 430 | loss train: 5.065, val: 5.889 | iter time: 93.41 ms (step) remaining time: 0:08:11
+Epoch 1 | iter 440 step 440 | loss train: 5.070, val: 5.889 | iter time: 93.38 ms (step) remaining time: 0:08:05
+Epoch 1 | iter 450 step 450 | loss train: 5.093, val: 5.889 | iter time: 93.59 ms (step) remaining time: 0:08:00
+Epoch 1 | iter 460 step 460 | loss train: 5.137, val: 5.889 | iter time: 93.50 ms (step) remaining time: 0:07:54
+Epoch 1 | iter 470 step 470 | loss train: 5.106, val: 5.889 | iter time: 93.75 ms (step) remaining time: 0:07:49
+Epoch 1 | iter 480 step 480 | loss train: 5.073, val: 5.889 | iter time: 93.51 ms (step) remaining time: 0:07:44
+Epoch 1 | iter 490 step 490 | loss train: 5.065, val: 5.889 | iter time: 93.50 ms (step) remaining time: 0:07:39
+Epoch 1 | iter 500 step 500 | loss train: 5.079, val: 5.889 | iter time: 93.40 ms (step) remaining time: 0:07:34
+Validating ...
+iter 500: val loss 5.8305, val time: 3518.42 ms
+Epoch 1 | iter 510 step 510 | loss train: 5.083, val: 5.831 | iter time: 93.44 ms (step) remaining time: 0:07:51
+Epoch 1 | iter 520 step 520 | loss train: 5.085, val: 5.831 | iter time: 93.44 ms (step) remaining time: 0:07:46
+Epoch 1 | iter 530 step 530 | loss train: 4.989, val: 5.831 | iter time: 93.38 ms (step) remaining time: 0:07:41
+Epoch 1 | iter 540 step 540 | loss train: 5.113, val: 5.831 | iter time: 93.36 ms (step) remaining time: 0:07:37
+Epoch 1 | iter 550 step 550 | loss train: 5.054, val: 5.831 | iter time: 93.32 ms (step) remaining time: 0:07:32
+Epoch 1 | iter 560 step 560 | loss train: 4.997, val: 5.831 | iter time: 93.54 ms (step) remaining time: 0:07:28
+Epoch 1 | iter 570 step 570 | loss train: 5.009, val: 5.831 | iter time: 93.37 ms (step) remaining time: 0:07:23
+Epoch 1 | iter 580 step 580 | loss train: 5.010, val: 5.831 | iter time: 93.43 ms (step) remaining time: 0:07:19
+Epoch 1 | iter 590 step 590 | loss train: 4.953, val: 5.831 | iter time: 93.45 ms (step) remaining time: 0:07:15
+Epoch 1 | iter 600 step 600 | loss train: 5.044, val: 5.831 | iter time: 93.45 ms (step) remaining time: 0:07:11
+Validating ...
+iter 600: val loss 5.8059, val time: 3530.27 ms
+Epoch 1 | iter 610 step 610 | loss train: 5.070, val: 5.806 | iter time: 93.59 ms (step) remaining time: 0:07:25
+Epoch 1 | iter 620 step 620 | loss train: 5.042, val: 5.806 | iter time: 93.59 ms (step) remaining time: 0:07:21
+Epoch 1 | iter 630 step 630 | loss train: 5.087, val: 5.806 | iter time: 93.59 ms (step) remaining time: 0:07:17
+Epoch 2 | iter 640 step 640 | loss train: 5.006, val: 5.806 | iter time: 93.17 ms (step) remaining time: 0:07:14
+Epoch 2 | iter 650 step 650 | loss train: 4.974, val: 5.806 | iter time: 93.52 ms (step) remaining time: 0:07:10
+Epoch 2 | iter 660 step 660 | loss train: 4.958, val: 5.806 | iter time: 93.48 ms (step) remaining time: 0:07:06
+Epoch 2 | iter 670 step 670 | loss train: 5.011, val: 5.806 | iter time: 93.56 ms (step) remaining time: 0:07:02
+Epoch 2 | iter 680 step 680 | loss train: 5.013, val: 5.806 | iter time: 93.60 ms (step) remaining time: 0:06:59
+Epoch 2 | iter 690 step 690 | loss train: 4.966, val: 5.806 | iter time: 93.46 ms (step) remaining time: 0:06:55
+Epoch 2 | iter 700 step 700 | loss train: 5.049, val: 5.806 | iter time: 93.55 ms (step) remaining time: 0:06:52
+Validating ...
+iter 700: val loss 5.7824, val time: 3514.69 ms
+Epoch 2 | iter 710 step 710 | loss train: 5.020, val: 5.782 | iter time: 93.46 ms (step) remaining time: 0:07:03
+Epoch 2 | iter 720 step 720 | loss train: 4.962, val: 5.782 | iter time: 93.41 ms (step) remaining time: 0:07:00
+Epoch 2 | iter 730 step 730 | loss train: 5.029, val: 5.782 | iter time: 93.46 ms (step) remaining time: 0:06:56
+Epoch 2 | iter 740 step 740 | loss train: 4.979, val: 5.782 | iter time: 93.45 ms (step) remaining time: 0:06:53
+Epoch 2 | iter 750 step 750 | loss train: 4.965, val: 5.782 | iter time: 93.39 ms (step) remaining time: 0:06:50
+Epoch 2 | iter 760 step 760 | loss train: 4.975, val: 5.782 | iter time: 93.33 ms (step) remaining time: 0:06:46
+Epoch 2 | iter 770 step 770 | loss train: 4.962, val: 5.782 | iter time: 93.34 ms (step) remaining time: 0:06:43
+Epoch 2 | iter 780 step 780 | loss train: 4.944, val: 5.782 | iter time: 93.34 ms (step) remaining time: 0:06:40
+Epoch 2 | iter 790 step 790 | loss train: 4.965, val: 5.782 | iter time: 93.26 ms (step) remaining time: 0:06:37
+Epoch 2 | iter 800 step 800 | loss train: 5.024, val: 5.782 | iter time: 93.39 ms (step) remaining time: 0:06:34
+Validating ...
+iter 800: val loss 5.7585, val time: 3520.64 ms
+Epoch 2 | iter 810 step 810 | loss train: 4.979, val: 5.758 | iter time: 93.49 ms (step) remaining time: 0:06:43
+Epoch 2 | iter 820 step 820 | loss train: 4.969, val: 5.758 | iter time: 93.55 ms (step) remaining time: 0:06:40
+Epoch 2 | iter 830 step 830 | loss train: 4.966, val: 5.758 | iter time: 93.58 ms (step) remaining time: 0:06:37
+Epoch 2 | iter 840 step 840 | loss train: 5.018, val: 5.758 | iter time: 93.69 ms (step) remaining time: 0:06:34
+Epoch 2 | iter 850 step 850 | loss train: 5.004, val: 5.758 | iter time: 93.64 ms (step) remaining time: 0:06:31
+Epoch 2 | iter 860 step 860 | loss train: 4.940, val: 5.758 | iter time: 93.41 ms (step) remaining time: 0:06:28
+Epoch 2 | iter 870 step 870 | loss train: 4.938, val: 5.758 | iter time: 93.37 ms (step) remaining time: 0:06:25
+Epoch 2 | iter 880 step 880 | loss train: 4.863, val: 5.758 | iter time: 93.44 ms (step) remaining time: 0:06:22
+Epoch 2 | iter 890 step 890 | loss train: 4.974, val: 5.758 | iter time: 93.46 ms (step) remaining time: 0:06:20
+Epoch 2 | iter 900 step 900 | loss train: 4.923, val: 5.758 | iter time: 93.48 ms (step) remaining time: 0:06:17
+Validating ...
+iter 900: val loss 5.7518, val time: 3533.28 ms
+Epoch 2 | iter 910 step 910 | loss train: 4.929, val: 5.752 | iter time: 93.71 ms (step) remaining time: 0:06:25
+Epoch 2 | iter 920 step 920 | loss train: 4.976, val: 5.752 | iter time: 93.58 ms (step) remaining time: 0:06:22
+Epoch 2 | iter 930 step 930 | loss train: 4.904, val: 5.752 | iter time: 93.47 ms (step) remaining time: 0:06:19
+Epoch 2 | iter 940 step 940 | loss train: 4.948, val: 5.752 | iter time: 93.57 ms (step) remaining time: 0:06:16
+Epoch 2 | iter 950 step 950 | loss train: 4.964, val: 5.752 | iter time: 93.28 ms (step) remaining time: 0:06:14
+Epoch 2 | iter 960 step 960 | loss train: 4.934, val: 5.752 | iter time: 93.14 ms (step) remaining time: 0:06:11
+Epoch 2 | iter 970 step 970 | loss train: 4.917, val: 5.752 | iter time: 93.44 ms (step) remaining time: 0:06:08
+Epoch 2 | iter 980 step 980 | loss train: 4.981, val: 5.752 | iter time: 93.41 ms (step) remaining time: 0:06:06
+Epoch 2 | iter 990 step 990 | loss train: 4.934, val: 5.752 | iter time: 93.45 ms (step) remaining time: 0:06:03
+Epoch 2 | iter 1000 step 1000 | loss train: 5.001, val: 5.752 | iter time: 93.62 ms (step) remaining time: 0:06:01
+Validating ...
+iter 1000: val loss 5.7295, val time: 3515.37 ms
+Saving checkpoint to 'out/pretrain/custom-lm_15_6M_on_pcfg_10/step-00001000/lit_model.pth'
+Epoch 2 | iter 1010 step 1010 | loss train: 4.997, val: 5.729 | iter time: 93.49 ms (step) remaining time: 0:06:13
+Epoch 2 | iter 1020 step 1020 | loss train: 4.924, val: 5.729 | iter time: 93.55 ms (step) remaining time: 0:06:11
+Epoch 2 | iter 1030 step 1030 | loss train: 4.932, val: 5.729 | iter time: 93.49 ms (step) remaining time: 0:06:08
+Epoch 2 | iter 1040 step 1040 | loss train: 4.943, val: 5.729 | iter time: 93.56 ms (step) remaining time: 0:06:06
+Epoch 2 | iter 1050 step 1050 | loss train: 4.893, val: 5.729 | iter time: 93.51 ms (step) remaining time: 0:06:03
+Epoch 2 | iter 1060 step 1060 | loss train: 4.902, val: 5.729 | iter time: 93.70 ms (step) remaining time: 0:06:00
+Epoch 2 | iter 1070 step 1070 | loss train: 4.953, val: 5.729 | iter time: 93.60 ms (step) remaining time: 0:05:58
+Epoch 2 | iter 1080 step 1080 | loss train: 4.916, val: 5.729 | iter time: 93.66 ms (step) remaining time: 0:05:55
+Epoch 2 | iter 1090 step 1090 | loss train: 4.922, val: 5.729 | iter time: 93.40 ms (step) remaining time: 0:05:53
+Epoch 2 | iter 1100 step 1100 | loss train: 4.910, val: 5.729 | iter time: 93.40 ms (step) remaining time: 0:05:51
+Validating ...
+iter 1100: val loss 5.7187, val time: 3533.35 ms
+Epoch 2 | iter 1110 step 1110 | loss train: 4.922, val: 5.719 | iter time: 93.32 ms (step) remaining time: 0:05:56
+Epoch 2 | iter 1120 step 1120 | loss train: 4.954, val: 5.719 | iter time: 93.24 ms (step) remaining time: 0:05:54
+Epoch 2 | iter 1130 step 1130 | loss train: 4.936, val: 5.719 | iter time: 93.39 ms (step) remaining time: 0:05:51
+Epoch 2 | iter 1140 step 1140 | loss train: 4.924, val: 5.719 | iter time: 93.47 ms (step) remaining time: 0:05:49
+Epoch 2 | iter 1150 step 1150 | loss train: 4.903, val: 5.719 | iter time: 93.47 ms (step) remaining time: 0:05:46
+Epoch 2 | iter 1160 step 1160 | loss train: 4.944, val: 5.719 | iter time: 93.53 ms (step) remaining time: 0:05:44
+Epoch 2 | iter 1170 step 1170 | loss train: 4.908, val: 5.719 | iter time: 93.51 ms (step) remaining time: 0:05:42
+Epoch 2 | iter 1180 step 1180 | loss train: 4.951, val: 5.719 | iter time: 93.42 ms (step) remaining time: 0:05:39
+Epoch 2 | iter 1190 step 1190 | loss train: 4.991, val: 5.719 | iter time: 93.44 ms (step) remaining time: 0:05:37
+Epoch 2 | iter 1200 step 1200 | loss train: 4.943, val: 5.719 | iter time: 93.71 ms (step) remaining time: 0:05:35
+Validating ...
+iter 1200: val loss 5.7078, val time: 3516.06 ms
+Epoch 2 | iter 1210 step 1210 | loss train: 4.951, val: 5.708 | iter time: 93.47 ms (step) remaining time: 0:05:40
+Epoch 2 | iter 1220 step 1220 | loss train: 4.950, val: 5.708 | iter time: 93.43 ms (step) remaining time: 0:05:37
+Epoch 2 | iter 1230 step 1230 | loss train: 4.967, val: 5.708 | iter time: 93.43 ms (step) remaining time: 0:05:35
+Epoch 2 | iter 1240 step 1240 | loss train: 4.853, val: 5.708 | iter time: 93.46 ms (step) remaining time: 0:05:33
+Epoch 2 | iter 1250 step 1250 | loss train: 4.894, val: 5.708 | iter time: 93.49 ms (step) remaining time: 0:05:31
+Epoch 2 | iter 1260 step 1260 | loss train: 4.950, val: 5.708 | iter time: 93.39 ms (step) remaining time: 0:05:28
+Epoch 2 | iter 1270 step 1270 | loss train: 4.964, val: 5.708 | iter time: 93.46 ms (step) remaining time: 0:05:26
+Epoch 3 | iter 1280 step 1280 | loss train: 4.877, val: 5.708 | iter time: 93.51 ms (step) remaining time: 0:05:24
+Epoch 3 | iter 1290 step 1290 | loss train: 4.903, val: 5.708 | iter time: 93.11 ms (step) remaining time: 0:05:22
+Epoch 3 | iter 1300 step 1300 | loss train: 4.927, val: 5.708 | iter time: 93.43 ms (step) remaining time: 0:05:20
+Validating ...
+iter 1300: val loss 5.7038, val time: 3525.63 ms
+Epoch 3 | iter 1310 step 1310 | loss train: 4.895, val: 5.704 | iter time: 93.67 ms (step) remaining time: 0:05:24
+Epoch 3 | iter 1320 step 1320 | loss train: 4.941, val: 5.704 | iter time: 93.62 ms (step) remaining time: 0:05:22
+Epoch 3 | iter 1330 step 1330 | loss train: 4.920, val: 5.704 | iter time: 93.75 ms (step) remaining time: 0:05:20
+Epoch 3 | iter 1340 step 1340 | loss train: 4.862, val: 5.704 | iter time: 93.40 ms (step) remaining time: 0:05:18
+Epoch 3 | iter 1350 step 1350 | loss train: 4.911, val: 5.704 | iter time: 94.56 ms (step) remaining time: 0:05:15
+Epoch 3 | iter 1360 step 1360 | loss train: 4.914, val: 5.704 | iter time: 93.37 ms (step) remaining time: 0:05:13
+Epoch 3 | iter 1370 step 1370 | loss train: 4.876, val: 5.704 | iter time: 93.83 ms (step) remaining time: 0:05:11
+Epoch 3 | iter 1380 step 1380 | loss train: 4.894, val: 5.704 | iter time: 94.33 ms (step) remaining time: 0:05:09
+Epoch 3 | iter 1390 step 1390 | loss train: 4.901, val: 5.704 | iter time: 93.76 ms (step) remaining time: 0:05:07
+Epoch 3 | iter 1400 step 1400 | loss train: 4.872, val: 5.704 | iter time: 94.13 ms (step) remaining time: 0:05:05
+Validating ...
+iter 1400: val loss 5.7108, val time: 3525.28 ms
+Epoch 3 | iter 1410 step 1410 | loss train: 4.846, val: 5.711 | iter time: 93.49 ms (step) remaining time: 0:05:09
+Epoch 3 | iter 1420 step 1420 | loss train: 4.886, val: 5.711 | iter time: 93.41 ms (step) remaining time: 0:05:07
+Epoch 3 | iter 1430 step 1430 | loss train: 4.967, val: 5.711 | iter time: 93.96 ms (step) remaining time: 0:05:05
+Epoch 3 | iter 1440 step 1440 | loss train: 4.870, val: 5.711 | iter time: 93.68 ms (step) remaining time: 0:05:02
+Epoch 3 | iter 1450 step 1450 | loss train: 4.884, val: 5.711 | iter time: 93.76 ms (step) remaining time: 0:05:00
+Epoch 3 | iter 1460 step 1460 | loss train: 4.900, val: 5.711 | iter time: 93.92 ms (step) remaining time: 0:04:58
+Epoch 3 | iter 1470 step 1470 | loss train: 4.896, val: 5.711 | iter time: 93.52 ms (step) remaining time: 0:04:56
+Epoch 3 | iter 1480 step 1480 | loss train: 4.851, val: 5.711 | iter time: 94.36 ms (step) remaining time: 0:04:54
+Epoch 3 | iter 1490 step 1490 | loss train: 4.861, val: 5.711 | iter time: 93.77 ms (step) remaining time: 0:04:52
+Epoch 3 | iter 1500 step 1500 | loss train: 4.905, val: 5.711 | iter time: 93.58 ms (step) remaining time: 0:04:50
+Validating ...
+iter 1500: val loss 5.6959, val time: 3512.80 ms
+Epoch 3 | iter 1510 step 1510 | loss train: 4.829, val: 5.696 | iter time: 93.59 ms (step) remaining time: 0:04:54
+Epoch 3 | iter 1520 step 1520 | loss train: 4.915, val: 5.696 | iter time: 93.62 ms (step) remaining time: 0:04:52
+Epoch 3 | iter 1530 step 1530 | loss train: 4.892, val: 5.696 | iter time: 93.73 ms (step) remaining time: 0:04:50
+Epoch 3 | iter 1540 step 1540 | loss train: 4.872, val: 5.696 | iter time: 93.98 ms (step) remaining time: 0:04:48
+Epoch 3 | iter 1550 step 1550 | loss train: 4.869, val: 5.696 | iter time: 93.40 ms (step) remaining time: 0:04:46
+Epoch 3 | iter 1560 step 1560 | loss train: 4.874, val: 5.696 | iter time: 93.61 ms (step) remaining time: 0:04:44
+Epoch 3 | iter 1570 step 1570 | loss train: 4.918, val: 5.696 | iter time: 93.53 ms (step) remaining time: 0:04:42
+Epoch 3 | iter 1580 step 1580 | loss train: 4.861, val: 5.696 | iter time: 93.67 ms (step) remaining time: 0:04:40
+Epoch 3 | iter 1590 step 1590 | loss train: 4.946, val: 5.696 | iter time: 93.78 ms (step) remaining time: 0:04:38
+Epoch 3 | iter 1600 step 1600 | loss train: 4.892, val: 5.696 | iter time: 93.37 ms (step) remaining time: 0:04:36
+Validating ...
+iter 1600: val loss 5.6883, val time: 3513.98 ms
+Epoch 3 | iter 1610 step 1610 | loss train: 4.911, val: 5.688 | iter time: 93.68 ms (step) remaining time: 0:04:39
+Epoch 3 | iter 1620 step 1620 | loss train: 4.900, val: 5.688 | iter time: 93.45 ms (step) remaining time: 0:04:37
+Epoch 3 | iter 1630 step 1630 | loss train: 4.868, val: 5.688 | iter time: 93.39 ms (step) remaining time: 0:04:35
+Epoch 3 | iter 1640 step 1640 | loss train: 4.873, val: 5.688 | iter time: 93.42 ms (step) remaining time: 0:04:33
+Epoch 3 | iter 1650 step 1650 | loss train: 4.906, val: 5.688 | iter time: 93.50 ms (step) remaining time: 0:04:31
+Epoch 3 | iter 1660 step 1660 | loss train: 4.887, val: 5.688 | iter time: 93.43 ms (step) remaining time: 0:04:29
+Epoch 3 | iter 1670 step 1670 | loss train: 4.892, val: 5.688 | iter time: 93.49 ms (step) remaining time: 0:04:27
+Epoch 3 | iter 1680 step 1680 | loss train: 4.918, val: 5.688 | iter time: 93.43 ms (step) remaining time: 0:04:26
+Epoch 3 | iter 1690 step 1690 | loss train: 4.891, val: 5.688 | iter time: 93.46 ms (step) remaining time: 0:04:24
+Epoch 3 | iter 1700 step 1700 | loss train: 4.949, val: 5.688 | iter time: 93.48 ms (step) remaining time: 0:04:22
+Validating ...
+iter 1700: val loss 5.6867, val time: 3511.48 ms
+Epoch 3 | iter 1710 step 1710 | loss train: 4.878, val: 5.687 | iter time: 93.47 ms (step) remaining time: 0:04:24
+Epoch 3 | iter 1720 step 1720 | loss train: 4.938, val: 5.687 | iter time: 93.47 ms (step) remaining time: 0:04:22
+Epoch 3 | iter 1730 step 1730 | loss train: 4.893, val: 5.687 | iter time: 93.55 ms (step) remaining time: 0:04:20
+Epoch 3 | iter 1740 step 1740 | loss train: 4.906, val: 5.687 | iter time: 93.40 ms (step) remaining time: 0:04:19
+Epoch 3 | iter 1750 step 1750 | loss train: 4.880, val: 5.687 | iter time: 93.13 ms (step) remaining time: 0:04:17
+Epoch 3 | iter 1760 step 1760 | loss train: 4.877, val: 5.687 | iter time: 93.57 ms (step) remaining time: 0:04:15
+Epoch 3 | iter 1770 step 1770 | loss train: 4.859, val: 5.687 | iter time: 93.59 ms (step) remaining time: 0:04:13
+Epoch 3 | iter 1780 step 1780 | loss train: 4.918, val: 5.687 | iter time: 93.42 ms (step) remaining time: 0:04:11
+Epoch 3 | iter 1790 step 1790 | loss train: 4.834, val: 5.687 | iter time: 93.50 ms (step) remaining time: 0:04:10
+Epoch 3 | iter 1800 step 1800 | loss train: 4.888, val: 5.687 | iter time: 93.50 ms (step) remaining time: 0:04:08
+Validating ...
+iter 1800: val loss 5.6729, val time: 3524.32 ms
+Epoch 3 | iter 1810 step 1810 | loss train: 4.872, val: 5.673 | iter time: 93.48 ms (step) remaining time: 0:04:10
+Epoch 3 | iter 1820 step 1820 | loss train: 4.887, val: 5.673 | iter time: 93.55 ms (step) remaining time: 0:04:08
+Epoch 3 | iter 1830 step 1830 | loss train: 4.881, val: 5.673 | iter time: 93.31 ms (step) remaining time: 0:04:06
+Epoch 3 | iter 1840 step 1840 | loss train: 4.939, val: 5.673 | iter time: 93.55 ms (step) remaining time: 0:04:04
+Epoch 3 | iter 1850 step 1850 | loss train: 4.829, val: 5.673 | iter time: 93.33 ms (step) remaining time: 0:04:03
+Epoch 3 | iter 1860 step 1860 | loss train: 4.895, val: 5.673 | iter time: 93.33 ms (step) remaining time: 0:04:01
+Epoch 3 | iter 1870 step 1870 | loss train: 4.893, val: 5.673 | iter time: 93.28 ms (step) remaining time: 0:03:59
+Epoch 3 | iter 1880 step 1880 | loss train: 4.908, val: 5.673 | iter time: 93.40 ms (step) remaining time: 0:03:57
+Epoch 3 | iter 1890 step 1890 | loss train: 4.917, val: 5.673 | iter time: 93.55 ms (step) remaining time: 0:03:56
+Epoch 3 | iter 1900 step 1900 | loss train: 4.988, val: 5.673 | iter time: 93.16 ms (step) remaining time: 0:03:54
+Validating ...
+iter 1900: val loss 5.6719, val time: 3535.28 ms
+Epoch 3 | iter 1910 step 1910 | loss train: 4.907, val: 5.672 | iter time: 93.46 ms (step) remaining time: 0:03:56
+Epoch 4 | iter 1920 step 1920 | loss train: 4.937, val: 5.672 | iter time: 93.36 ms (step) remaining time: 0:03:54
+Epoch 4 | iter 1930 step 1930 | loss train: 4.783, val: 5.672 | iter time: 93.47 ms (step) remaining time: 0:03:52
+Epoch 4 | iter 1940 step 1940 | loss train: 4.750, val: 5.672 | iter time: 93.52 ms (step) remaining time: 0:03:50
+Epoch 4 | iter 1950 step 1950 | loss train: 4.832, val: 5.672 | iter time: 93.46 ms (step) remaining time: 0:03:49
+Epoch 4 | iter 1960 step 1960 | loss train: 4.848, val: 5.672 | iter time: 93.61 ms (step) remaining time: 0:03:47
+Epoch 4 | iter 1970 step 1970 | loss train: 4.836, val: 5.672 | iter time: 93.61 ms (step) remaining time: 0:03:45
+Epoch 4 | iter 1980 step 1980 | loss train: 4.866, val: 5.672 | iter time: 93.62 ms (step) remaining time: 0:03:44
+Epoch 4 | iter 1990 step 1990 | loss train: 4.847, val: 5.672 | iter time: 93.43 ms (step) remaining time: 0:03:42
+Epoch 4 | iter 2000 step 2000 | loss train: 4.878, val: 5.672 | iter time: 93.63 ms (step) remaining time: 0:03:40
+Validating ...
+iter 2000: val loss 5.6741, val time: 3512.47 ms
+Saving checkpoint to 'out/pretrain/custom-lm_15_6M_on_pcfg_10/step-00002000/lit_model.pth'
+Epoch 4 | iter 2010 step 2010 | loss train: 4.868, val: 5.674 | iter time: 93.49 ms (step) remaining time: 0:03:43
+Epoch 4 | iter 2020 step 2020 | loss train: 4.855, val: 5.674 | iter time: 93.52 ms (step) remaining time: 0:03:42
+Epoch 4 | iter 2030 step 2030 | loss train: 4.826, val: 5.674 | iter time: 93.53 ms (step) remaining time: 0:03:40
+Epoch 4 | iter 2040 step 2040 | loss train: 4.799, val: 5.674 | iter time: 93.48 ms (step) remaining time: 0:03:38
+Epoch 4 | iter 2050 step 2050 | loss train: 4.785, val: 5.674 | iter time: 93.48 ms (step) remaining time: 0:03:37
+Epoch 4 | iter 2060 step 2060 | loss train: 4.817, val: 5.674 | iter time: 93.48 ms (step) remaining time: 0:03:35
+Epoch 4 | iter 2070 step 2070 | loss train: 4.751, val: 5.674 | iter time: 93.57 ms (step) remaining time: 0:03:33
+Epoch 4 | iter 2080 step 2080 | loss train: 4.844, val: 5.674 | iter time: 93.53 ms (step) remaining time: 0:03:32
+Epoch 4 | iter 2090 step 2090 | loss train: 4.885, val: 5.674 | iter time: 93.48 ms (step) remaining time: 0:03:30
+Epoch 4 | iter 2100 step 2100 | loss train: 4.841, val: 5.674 | iter time: 93.64 ms (step) remaining time: 0:03:28
+Validating ...
+iter 2100: val loss 5.6660, val time: 3509.91 ms
+Epoch 4 | iter 2110 step 2110 | loss train: 4.822, val: 5.666 | iter time: 93.51 ms (step) remaining time: 0:03:29
+Epoch 4 | iter 2120 step 2120 | loss train: 4.875, val: 5.666 | iter time: 93.76 ms (step) remaining time: 0:03:28
+Epoch 4 | iter 2130 step 2130 | loss train: 4.819, val: 5.666 | iter time: 93.38 ms (step) remaining time: 0:03:26
+Epoch 4 | iter 2140 step 2140 | loss train: 4.837, val: 5.666 | iter time: 93.43 ms (step) remaining time: 0:03:24
+Epoch 4 | iter 2150 step 2150 | loss train: 4.876, val: 5.666 | iter time: 93.40 ms (step) remaining time: 0:03:23
+Epoch 4 | iter 2160 step 2160 | loss train: 4.837, val: 5.666 | iter time: 93.42 ms (step) remaining time: 0:03:21
+Epoch 4 | iter 2170 step 2170 | loss train: 4.904, val: 5.666 | iter time: 93.49 ms (step) remaining time: 0:03:19
+Epoch 4 | iter 2180 step 2180 | loss train: 4.870, val: 5.666 | iter time: 93.37 ms (step) remaining time: 0:03:18
+Epoch 4 | iter 2190 step 2190 | loss train: 4.851, val: 5.666 | iter time: 93.69 ms (step) remaining time: 0:03:16
+Epoch 4 | iter 2200 step 2200 | loss train: 4.841, val: 5.666 | iter time: 93.46 ms (step) remaining time: 0:03:14
+Validating ...
+iter 2200: val loss 5.6678, val time: 3528.80 ms
+Epoch 4 | iter 2210 step 2210 | loss train: 4.840, val: 5.668 | iter time: 93.51 ms (step) remaining time: 0:03:15
+Epoch 4 | iter 2220 step 2220 | loss train: 4.810, val: 5.668 | iter time: 93.44 ms (step) remaining time: 0:03:14
+Epoch 4 | iter 2230 step 2230 | loss train: 4.904, val: 5.668 | iter time: 93.25 ms (step) remaining time: 0:03:12
+Epoch 4 | iter 2240 step 2240 | loss train: 4.838, val: 5.668 | iter time: 93.41 ms (step) remaining time: 0:03:10
+Epoch 4 | iter 2250 step 2250 | loss train: 4.891, val: 5.668 | iter time: 93.35 ms (step) remaining time: 0:03:09
+Epoch 4 | iter 2260 step 2260 | loss train: 4.836, val: 5.668 | iter time: 93.27 ms (step) remaining time: 0:03:07
+Epoch 4 | iter 2270 step 2270 | loss train: 4.800, val: 5.668 | iter time: 93.88 ms (step) remaining time: 0:03:06
+Epoch 4 | iter 2280 step 2280 | loss train: 4.828, val: 5.668 | iter time: 93.39 ms (step) remaining time: 0:03:04
+Epoch 4 | iter 2290 step 2290 | loss train: 4.856, val: 5.668 | iter time: 93.45 ms (step) remaining time: 0:03:02
+Epoch 4 | iter 2300 step 2300 | loss train: 4.850, val: 5.668 | iter time: 93.31 ms (step) remaining time: 0:03:01
+Validating ...
+iter 2300: val loss 5.6627, val time: 3509.01 ms
+Epoch 4 | iter 2310 step 2310 | loss train: 4.858, val: 5.663 | iter time: 93.76 ms (step) remaining time: 0:03:01
+Epoch 4 | iter 2320 step 2320 | loss train: 4.803, val: 5.663 | iter time: 93.33 ms (step) remaining time: 0:03:00
+Epoch 4 | iter 2330 step 2330 | loss train: 4.841, val: 5.663 | iter time: 93.48 ms (step) remaining time: 0:02:58
+Epoch 4 | iter 2340 step 2340 | loss train: 4.838, val: 5.663 | iter time: 93.43 ms (step) remaining time: 0:02:57
+Epoch 4 | iter 2350 step 2350 | loss train: 4.901, val: 5.663 | iter time: 93.42 ms (step) remaining time: 0:02:55
+Epoch 4 | iter 2360 step 2360 | loss train: 4.837, val: 5.663 | iter time: 93.45 ms (step) remaining time: 0:02:53
+Epoch 4 | iter 2370 step 2370 | loss train: 4.814, val: 5.663 | iter time: 93.57 ms (step) remaining time: 0:02:52
+Epoch 4 | iter 2380 step 2380 | loss train: 4.846, val: 5.663 | iter time: 93.51 ms (step) remaining time: 0:02:50
+Epoch 4 | iter 2390 step 2390 | loss train: 4.793, val: 5.663 | iter time: 93.44 ms (step) remaining time: 0:02:49
+Epoch 4 | iter 2400 step 2400 | loss train: 4.745, val: 5.663 | iter time: 93.53 ms (step) remaining time: 0:02:47
+Validating ...
+iter 2400: val loss 5.6636, val time: 3510.71 ms
+Epoch 4 | iter 2410 step 2410 | loss train: 4.873, val: 5.664 | iter time: 93.61 ms (step) remaining time: 0:02:47
+Epoch 4 | iter 2420 step 2420 | loss train: 4.851, val: 5.664 | iter time: 93.93 ms (step) remaining time: 0:02:46
+Epoch 4 | iter 2430 step 2430 | loss train: 4.852, val: 5.664 | iter time: 93.53 ms (step) remaining time: 0:02:44
+Epoch 4 | iter 2440 step 2440 | loss train: 4.810, val: 5.664 | iter time: 93.54 ms (step) remaining time: 0:02:43
+Epoch 4 | iter 2450 step 2450 | loss train: 4.860, val: 5.664 | iter time: 93.38 ms (step) remaining time: 0:02:41
+Epoch 4 | iter 2460 step 2460 | loss train: 4.834, val: 5.664 | iter time: 93.49 ms (step) remaining time: 0:02:40
+Epoch 4 | iter 2470 step 2470 | loss train: 4.816, val: 5.664 | iter time: 93.64 ms (step) remaining time: 0:02:38
+Epoch 4 | iter 2480 step 2480 | loss train: 4.888, val: 5.664 | iter time: 93.50 ms (step) remaining time: 0:02:37
+Epoch 4 | iter 2490 step 2490 | loss train: 4.877, val: 5.664 | iter time: 93.41 ms (step) remaining time: 0:02:35
+Epoch 4 | iter 2500 step 2500 | loss train: 4.866, val: 5.664 | iter time: 93.85 ms (step) remaining time: 0:02:34
+Validating ...
+iter 2500: val loss 5.6624, val time: 3518.12 ms
+Epoch 4 | iter 2510 step 2510 | loss train: 4.803, val: 5.662 | iter time: 93.44 ms (step) remaining time: 0:02:34
+Epoch 4 | iter 2520 step 2520 | loss train: 4.880, val: 5.662 | iter time: 93.39 ms (step) remaining time: 0:02:32
+Epoch 4 | iter 2530 step 2530 | loss train: 4.788, val: 5.662 | iter time: 93.54 ms (step) remaining time: 0:02:31
+Epoch 4 | iter 2540 step 2540 | loss train: 4.874, val: 5.662 | iter time: 93.54 ms (step) remaining time: 0:02:29
+Epoch 4 | iter 2550 step 2550 | loss train: 4.841, val: 5.662 | iter time: 93.66 ms (step) remaining time: 0:02:28
+Epoch 5 | iter 2560 step 2560 | loss train: 4.824, val: 5.662 | iter time: 93.40 ms (step) remaining time: 0:02:26
+Epoch 5 | iter 2570 step 2570 | loss train: 4.809, val: 5.662 | iter time: 93.25 ms (step) remaining time: 0:02:25
+Epoch 5 | iter 2580 step 2580 | loss train: 4.818, val: 5.662 | iter time: 93.38 ms (step) remaining time: 0:02:23
+Epoch 5 | iter 2590 step 2590 | loss train: 4.800, val: 5.662 | iter time: 93.33 ms (step) remaining time: 0:02:22
+Epoch 5 | iter 2600 step 2600 | loss train: 4.831, val: 5.662 | iter time: 93.38 ms (step) remaining time: 0:02:20
+Validating ...
+iter 2600: val loss 5.6649, val time: 3513.17 ms
+Epoch 5 | iter 2610 step 2610 | loss train: 4.804, val: 5.665 | iter time: 93.37 ms (step) remaining time: 0:02:20
+Epoch 5 | iter 2620 step 2620 | loss train: 4.844, val: 5.665 | iter time: 93.43 ms (step) remaining time: 0:02:19
+Epoch 5 | iter 2630 step 2630 | loss train: 4.805, val: 5.665 | iter time: 93.39 ms (step) remaining time: 0:02:17
+Epoch 5 | iter 2640 step 2640 | loss train: 4.825, val: 5.665 | iter time: 93.39 ms (step) remaining time: 0:02:16
+Epoch 5 | iter 2650 step 2650 | loss train: 4.773, val: 5.665 | iter time: 93.49 ms (step) remaining time: 0:02:14
+Epoch 5 | iter 2660 step 2660 | loss train: 4.746, val: 5.665 | iter time: 93.78 ms (step) remaining time: 0:02:13
+Epoch 5 | iter 2670 step 2670 | loss train: 4.823, val: 5.665 | iter time: 93.43 ms (step) remaining time: 0:02:11
+Epoch 5 | iter 2680 step 2680 | loss train: 4.839, val: 5.665 | iter time: 93.35 ms (step) remaining time: 0:02:10
+Epoch 5 | iter 2690 step 2690 | loss train: 4.808, val: 5.665 | iter time: 93.42 ms (step) remaining time: 0:02:08
+Epoch 5 | iter 2700 step 2700 | loss train: 4.802, val: 5.665 | iter time: 93.47 ms (step) remaining time: 0:02:07
+Validating ...
+iter 2700: val loss 5.6694, val time: 3509.75 ms
+Epoch 5 | iter 2710 step 2710 | loss train: 4.856, val: 5.669 | iter time: 93.37 ms (step) remaining time: 0:02:07
+Epoch 5 | iter 2720 step 2720 | loss train: 4.769, val: 5.669 | iter time: 93.31 ms (step) remaining time: 0:02:05
+Epoch 5 | iter 2730 step 2730 | loss train: 4.801, val: 5.669 | iter time: 93.52 ms (step) remaining time: 0:02:04
+Epoch 5 | iter 2740 step 2740 | loss train: 4.802, val: 5.669 | iter time: 93.40 ms (step) remaining time: 0:02:02
+Epoch 5 | iter 2750 step 2750 | loss train: 4.776, val: 5.669 | iter time: 93.49 ms (step) remaining time: 0:02:01
+Epoch 5 | iter 2760 step 2760 | loss train: 4.825, val: 5.669 | iter time: 93.56 ms (step) remaining time: 0:01:59
+Epoch 5 | iter 2770 step 2770 | loss train: 4.767, val: 5.669 | iter time: 93.44 ms (step) remaining time: 0:01:58
+Epoch 5 | iter 2780 step 2780 | loss train: 4.822, val: 5.669 | iter time: 93.41 ms (step) remaining time: 0:01:56
+Epoch 5 | iter 2790 step 2790 | loss train: 4.810, val: 5.669 | iter time: 93.46 ms (step) remaining time: 0:01:55
+Epoch 5 | iter 2800 step 2800 | loss train: 4.817, val: 5.669 | iter time: 93.45 ms (step) remaining time: 0:01:53
+Validating ...
+iter 2800: val loss 5.6649, val time: 3508.79 ms
+Epoch 5 | iter 2810 step 2810 | loss train: 4.827, val: 5.665 | iter time: 93.24 ms (step) remaining time: 0:01:53
+Epoch 5 | iter 2820 step 2820 | loss train: 4.818, val: 5.665 | iter time: 93.64 ms (step) remaining time: 0:01:52
+Epoch 5 | iter 2830 step 2830 | loss train: 4.807, val: 5.665 | iter time: 93.52 ms (step) remaining time: 0:01:50
+Epoch 5 | iter 2840 step 2840 | loss train: 4.745, val: 5.665 | iter time: 93.41 ms (step) remaining time: 0:01:49
+Epoch 5 | iter 2850 step 2850 | loss train: 4.809, val: 5.665 | iter time: 93.96 ms (step) remaining time: 0:01:47
+Epoch 5 | iter 2860 step 2860 | loss train: 4.762, val: 5.665 | iter time: 93.46 ms (step) remaining time: 0:01:46
+Epoch 5 | iter 2870 step 2870 | loss train: 4.728, val: 5.665 | iter time: 93.74 ms (step) remaining time: 0:01:44
+Epoch 5 | iter 2880 step 2880 | loss train: 4.783, val: 5.665 | iter time: 93.77 ms (step) remaining time: 0:01:43
+Epoch 5 | iter 2890 step 2890 | loss train: 4.816, val: 5.665 | iter time: 93.74 ms (step) remaining time: 0:01:41
+Epoch 5 | iter 2900 step 2900 | loss train: 4.776, val: 5.665 | iter time: 93.38 ms (step) remaining time: 0:01:40
+Validating ...
+iter 2900: val loss 5.6625, val time: 3545.99 ms
+Epoch 5 | iter 2910 step 2910 | loss train: 4.832, val: 5.662 | iter time: 94.05 ms (step) remaining time: 0:01:40
+Epoch 5 | iter 2920 step 2920 | loss train: 4.836, val: 5.662 | iter time: 94.69 ms (step) remaining time: 0:01:38
+Epoch 5 | iter 2930 step 2930 | loss train: 4.815, val: 5.662 | iter time: 94.08 ms (step) remaining time: 0:01:37
+Epoch 5 | iter 2940 step 2940 | loss train: 4.846, val: 5.662 | iter time: 93.32 ms (step) remaining time: 0:01:35
+Epoch 5 | iter 2950 step 2950 | loss train: 4.765, val: 5.662 | iter time: 93.19 ms (step) remaining time: 0:01:34
+Epoch 5 | iter 2960 step 2960 | loss train: 4.824, val: 5.662 | iter time: 94.22 ms (step) remaining time: 0:01:32
+Epoch 5 | iter 2970 step 2970 | loss train: 4.834, val: 5.662 | iter time: 94.12 ms (step) remaining time: 0:01:31
+Epoch 5 | iter 2980 step 2980 | loss train: 4.889, val: 5.662 | iter time: 100.63 ms (step) remaining time: 0:01:30
+Epoch 5 | iter 2990 step 2990 | loss train: 4.835, val: 5.662 | iter time: 94.08 ms (step) remaining time: 0:01:28
+Epoch 5 | iter 3000 step 3000 | loss train: 4.832, val: 5.662 | iter time: 94.10 ms (step) remaining time: 0:01:27
+Validating ...
+iter 3000: val loss 5.6581, val time: 3514.71 ms
+Saving checkpoint to 'out/pretrain/custom-lm_15_6M_on_pcfg_10/step-00003000/lit_model.pth'
+Epoch 5 | iter 3010 step 3010 | loss train: 4.827, val: 5.658 | iter time: 93.64 ms (step) remaining time: 0:01:27
+Epoch 5 | iter 3020 step 3020 | loss train: 4.850, val: 5.658 | iter time: 93.58 ms (step) remaining time: 0:01:25
+Epoch 5 | iter 3030 step 3030 | loss train: 4.845, val: 5.658 | iter time: 94.01 ms (step) remaining time: 0:01:24
+Epoch 5 | iter 3040 step 3040 | loss train: 4.819, val: 5.658 | iter time: 93.57 ms (step) remaining time: 0:01:22
+Epoch 5 | iter 3050 step 3050 | loss train: 4.840, val: 5.658 | iter time: 93.60 ms (step) remaining time: 0:01:21
+Epoch 5 | iter 3060 step 3060 | loss train: 4.761, val: 5.658 | iter time: 93.47 ms (step) remaining time: 0:01:20
+Epoch 5 | iter 3070 step 3070 | loss train: 4.776, val: 5.658 | iter time: 93.50 ms (step) remaining time: 0:01:18
+Epoch 5 | iter 3080 step 3080 | loss train: 4.796, val: 5.658 | iter time: 93.54 ms (step) remaining time: 0:01:17
+Epoch 5 | iter 3090 step 3090 | loss train: 4.798, val: 5.658 | iter time: 93.64 ms (step) remaining time: 0:01:15
+Epoch 5 | iter 3100 step 3100 | loss train: 4.839, val: 5.658 | iter time: 94.26 ms (step) remaining time: 0:01:14
+Validating ...
+iter 3100: val loss 5.6599, val time: 3512.08 ms
+Epoch 5 | iter 3110 step 3110 | loss train: 4.835, val: 5.660 | iter time: 93.65 ms (step) remaining time: 0:01:13
+Epoch 5 | iter 3120 step 3120 | loss train: 4.815, val: 5.660 | iter time: 93.83 ms (step) remaining time: 0:01:12
+Epoch 5 | iter 3130 step 3130 | loss train: 4.839, val: 5.660 | iter time: 93.61 ms (step) remaining time: 0:01:10
+Epoch 5 | iter 3140 step 3140 | loss train: 4.822, val: 5.660 | iter time: 93.52 ms (step) remaining time: 0:01:09
+Epoch 5 | iter 3150 step 3150 | loss train: 4.816, val: 5.660 | iter time: 94.72 ms (step) remaining time: 0:01:08
+Epoch 5 | iter 3160 step 3160 | loss train: 4.831, val: 5.660 | iter time: 93.49 ms (step) remaining time: 0:01:06
+Epoch 5 | iter 3170 step 3170 | loss train: 4.854, val: 5.660 | iter time: 93.71 ms (step) remaining time: 0:01:05
+Epoch 5 | iter 3180 step 3180 | loss train: 4.826, val: 5.660 | iter time: 93.76 ms (step) remaining time: 0:01:03
+Epoch 5 | iter 3190 step 3190 | loss train: 4.806, val: 5.660 | iter time: 93.43 ms (step) remaining time: 0:01:02
+Epoch 6 | iter 3200 step 3200 | loss train: 4.758, val: 5.660 | iter time: 95.31 ms (step) remaining time: 0:01:01
+Validating ...
+iter 3200: val loss 5.6572, val time: 3524.94 ms
+Epoch 6 | iter 3210 step 3210 | loss train: 4.771, val: 5.657 | iter time: 93.53 ms (step) remaining time: 0:01:00
+Epoch 6 | iter 3220 step 3220 | loss train: 4.716, val: 5.657 | iter time: 94.26 ms (step) remaining time: 0:00:58
+Epoch 6 | iter 3230 step 3230 | loss train: 4.786, val: 5.657 | iter time: 93.68 ms (step) remaining time: 0:00:57
+Epoch 6 | iter 3240 step 3240 | loss train: 4.854, val: 5.657 | iter time: 93.92 ms (step) remaining time: 0:00:56
+Epoch 6 | iter 3250 step 3250 | loss train: 4.798, val: 5.657 | iter time: 93.67 ms (step) remaining time: 0:00:54
+Epoch 6 | iter 3260 step 3260 | loss train: 4.742, val: 5.657 | iter time: 93.55 ms (step) remaining time: 0:00:53
+Epoch 6 | iter 3270 step 3270 | loss train: 4.820, val: 5.657 | iter time: 94.33 ms (step) remaining time: 0:00:51
+Epoch 6 | iter 3280 step 3280 | loss train: 4.837, val: 5.657 | iter time: 94.26 ms (step) remaining time: 0:00:50
+Epoch 6 | iter 3290 step 3290 | loss train: 4.746, val: 5.657 | iter time: 93.60 ms (step) remaining time: 0:00:49
+Epoch 6 | iter 3300 step 3300 | loss train: 4.756, val: 5.657 | iter time: 93.65 ms (step) remaining time: 0:00:47
+Validating ...
+iter 3300: val loss 5.6631, val time: 3527.28 ms
+Epoch 6 | iter 3310 step 3310 | loss train: 4.783, val: 5.663 | iter time: 93.45 ms (step) remaining time: 0:00:46
+Epoch 6 | iter 3320 step 3320 | loss train: 4.766, val: 5.663 | iter time: 93.66 ms (step) remaining time: 0:00:45
+Epoch 6 | iter 3330 step 3330 | loss train: 4.765, val: 5.663 | iter time: 93.94 ms (step) remaining time: 0:00:44
+Epoch 6 | iter 3340 step 3340 | loss train: 4.804, val: 5.663 | iter time: 99.73 ms (step) remaining time: 0:00:42
+Epoch 6 | iter 3350 step 3350 | loss train: 4.744, val: 5.663 | iter time: 93.93 ms (step) remaining time: 0:00:41
+Epoch 6 | iter 3360 step 3360 | loss train: 4.717, val: 5.663 | iter time: 93.77 ms (step) remaining time: 0:00:40
+Epoch 6 | iter 3370 step 3370 | loss train: 4.776, val: 5.663 | iter time: 93.82 ms (step) remaining time: 0:00:38
+Epoch 6 | iter 3380 step 3380 | loss train: 4.718, val: 5.663 | iter time: 93.80 ms (step) remaining time: 0:00:37
+Epoch 6 | iter 3390 step 3390 | loss train: 4.827, val: 5.663 | iter time: 93.68 ms (step) remaining time: 0:00:35
+Epoch 6 | iter 3400 step 3400 | loss train: 4.759, val: 5.663 | iter time: 94.29 ms (step) remaining time: 0:00:34
+Validating ...
+iter 3400: val loss 5.6609, val time: 3527.81 ms
+Epoch 6 | iter 3410 step 3410 | loss train: 4.800, val: 5.661 | iter time: 94.23 ms (step) remaining time: 0:00:33
+Epoch 6 | iter 3420 step 3420 | loss train: 4.780, val: 5.661 | iter time: 93.72 ms (step) remaining time: 0:00:32
+Epoch 6 | iter 3430 step 3430 | loss train: 4.777, val: 5.661 | iter time: 93.66 ms (step) remaining time: 0:00:30
+Epoch 6 | iter 3440 step 3440 | loss train: 4.822, val: 5.661 | iter time: 93.64 ms (step) remaining time: 0:00:29
+Epoch 6 | iter 3450 step 3450 | loss train: 4.749, val: 5.661 | iter time: 93.65 ms (step) remaining time: 0:00:28
+Epoch 6 | iter 3460 step 3460 | loss train: 4.788, val: 5.661 | iter time: 93.60 ms (step) remaining time: 0:00:26
+Epoch 6 | iter 3470 step 3470 | loss train: 4.777, val: 5.661 | iter time: 93.67 ms (step) remaining time: 0:00:25
+Epoch 6 | iter 3480 step 3480 | loss train: 4.767, val: 5.661 | iter time: 93.84 ms (step) remaining time: 0:00:24
+Epoch 6 | iter 3490 step 3490 | loss train: 4.773, val: 5.661 | iter time: 93.65 ms (step) remaining time: 0:00:22
+Epoch 6 | iter 3500 step 3500 | loss train: 4.811, val: 5.661 | iter time: 93.48 ms (step) remaining time: 0:00:21
+Validating ...
+iter 3500: val loss 5.6620, val time: 3515.47 ms
+Epoch 6 | iter 3510 step 3510 | loss train: 4.745, val: 5.662 | iter time: 93.52 ms (step) remaining time: 0:00:20
+Epoch 6 | iter 3520 step 3520 | loss train: 4.746, val: 5.662 | iter time: 93.54 ms (step) remaining time: 0:00:18
+Epoch 6 | iter 3530 step 3530 | loss train: 4.801, val: 5.662 | iter time: 93.51 ms (step) remaining time: 0:00:17
+Epoch 6 | iter 3540 step 3540 | loss train: 4.734, val: 5.662 | iter time: 93.46 ms (step) remaining time: 0:00:16
+Epoch 6 | iter 3550 step 3550 | loss train: 4.782, val: 5.662 | iter time: 93.60 ms (step) remaining time: 0:00:14
+Epoch 6 | iter 3560 step 3560 | loss train: 4.784, val: 5.662 | iter time: 93.48 ms (step) remaining time: 0:00:13
+Epoch 6 | iter 3570 step 3570 | loss train: 4.745, val: 5.662 | iter time: 93.56 ms (step) remaining time: 0:00:12
+Epoch 6 | iter 3580 step 3580 | loss train: 4.776, val: 5.662 | iter time: 93.46 ms (step) remaining time: 0:00:10
+Epoch 6 | iter 3590 step 3590 | loss train: 4.752, val: 5.662 | iter time: 93.40 ms (step) remaining time: 0:00:09
+Epoch 6 | iter 3600 step 3600 | loss train: 4.793, val: 5.662 | iter time: 93.12 ms (step) remaining time: 0:00:08
+Validating ...
+iter 3600: val loss 5.6642, val time: 3509.60 ms
+Epoch 6 | iter 3610 step 3610 | loss train: 4.733, val: 5.664 | iter time: 93.46 ms (step) remaining time: 0:00:06
+Epoch 6 | iter 3620 step 3620 | loss train: 4.768, val: 5.664 | iter time: 93.59 ms (step) remaining time: 0:00:05
+Epoch 6 | iter 3630 step 3630 | loss train: 4.776, val: 5.664 | iter time: 93.47 ms (step) remaining time: 0:00:04
+Epoch 6 | iter 3640 step 3640 | loss train: 4.829, val: 5.664 | iter time: 93.54 ms (step) remaining time: 0:00:02
+Epoch 6 | iter 3650 step 3650 | loss train: 4.730, val: 5.664 | iter time: 93.41 ms (step) remaining time: 0:00:01
+Epoch 6 | iter 3660 step 3660 | loss train: 4.771, val: 5.664 | iter time: 93.45 ms (step) remaining time: 0:00:00
+Validating ...
+Final evaluation | val loss: 5.663 | val ppl: 288.122
+Saving checkpoint to 'out/pretrain/custom-lm_15_6M_on_pcfg_10/final/lit_model.pth'
+Training time: 505.71s
+Memory used: 11.74 GB
+wandb: - 0.010 MB of 0.010 MB uploadedwandb: \ 0.010 MB of 0.063 MB uploadedwandb: 
+wandb: Run history:
+wandb:                batches ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇████
+wandb: device/batches_per_sec ██▁▁▁▁███████▁▁▁▁█▁█████▁█▁▁█▁█████▁█▁▁▁
+wandb:   device/flops_per_sec ██▁▁▁▁███████▁▁▁▁█▁█████▁█▁▁█▁█████▁█▁▁▁
+wandb:   device/items_per_sec ██▁▁▁▁███████▁▁▁▁█▁█████▁█▁▁█▁█████▁█▁▁▁
+wandb:             device/mfu ██▁▁▁▁███████▁▁▁▁█▁█████▁█▁▁█▁█████▁█▁▁▁
+wandb: device/samples_per_sec ██▁▁▁▁███████▁▁▁▁█▁█████▁█▁▁█▁█████▁█▁▁▁
+wandb:                  epoch ▁▁▁▁▁▁▁▂▂▂▂▂▂▂▄▄▄▄▄▄▄▅▅▅▅▅▅▅▇▇▇▇▇▇▇█████
+wandb:                   iter ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇████
+wandb:              iter_time ▃▃▃▃▂▃▃▄▂▄▁▃▂▄▄▇█▂▃▄▃▄▃▃▃▂▃▃▂▂▃▅▇▃▃▆▅▄▃▁
+wandb:          learning_rate ▂▃▅▇██████▇▇▇▇▇▆▆▆▆▅▅▅▄▄▄▃▃▃▃▂▂▂▂▂▁▁▁▁▁▁
+wandb:                lengths ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇████
+wandb:                   loss █▄▂▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:         remaining_time █▅▄▄▃▃▃▃▃▃▃▃▃▃▃▃▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▁▁▁▁▁▁▁▁▁
+wandb:                samples ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇████
+wandb:                   step ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇████
+wandb:                   time ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▆▆▆▆▆▆▇▇▇▇▇████
+wandb:                 tokens ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇████
+wandb:           total_tokens ▁▁▁▁▂▂▂▂▂▃▃▃▃▃▄▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇████
+wandb:    trainer/global_step ▁▁▁▂▂▂▂▂▂▃▃▃▃▃▃▄▄▄▄▄▅▅▅▅▅▅▆▆▆▆▆▇▇▇▇▇▇███
+wandb:               val_loss █▃▂▂▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb:                val_ppl █▂▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+wandb: 
+wandb: Run summary:
+wandb:                batches 3660
+wandb: device/batches_per_sec 10.84276
+wandb:   device/flops_per_sec 11473508638156.857
+wandb:   device/items_per_sec 177647.74035
+wandb:             device/mfu 0.29647
+wandb: device/samples_per_sec 173.48412
+wandb:                  epoch 5
+wandb:                   iter 3660
+wandb:              iter_time 0.09345
+wandb:          learning_rate 4e-05
+wandb:                lengths 59965440
+wandb:                   loss 4.77096
+wandb:         remaining_time 0.26432
+wandb:                samples 58560
+wandb:                   step 3660
+wandb:                   time 483.70669
+wandb:                 tokens 59965440
+wandb:           total_tokens 59965440
+wandb:    trainer/global_step 3662
+wandb:               val_loss 5.66338
+wandb:                val_ppl 288.12226
+wandb: 
+wandb: 🚀 View run jumping-yogurt-135 at: https://wandb.ai/pcfg_pretrain/pretrain-/runs/kr2o1a0p
+wandb: ⭐️ View project at: https://wandb.ai/pcfg_pretrain/pretrain-
+wandb: Synced 6 W&B file(s), 0 media file(s), 0 artifact file(s) and 0 other file(s)
+wandb: Find logs at: ./wandb/run-20240708_104134-kr2o1a0p/logs
+wandb: WARNING The new W&B backend becomes opt-out in version 0.18.0; try it out with `wandb.require("core")`! See https://wandb.me/wandb-core for more information.
