@@ -1,1 +1,0 @@
-{"chunks": [{"chunk_bytes": 39999992, "chunk_size": 1, "dim": 9999998, "filename": "chunk-0-0.bin"}], "config": {"chunk_bytes": 50000000, "chunk_size": null, "compression": null, "data_format": ["no_header_tensor:16"], "data_spec": "[1, {\"type\": null, \"context\": null, \"children_spec\": []}]"}}

@@ -12,6 +12,9 @@ from torch.utils.data import DataLoader
 from litgpt import Tokenizer
 from litgpt.data import DataModule
 
+# added
+import torch
+
 
 @dataclass
 class TextFiles(DataModule):
@@ -70,7 +73,7 @@ class TextFiles(DataModule):
         if not Path(self.out_path_train).is_dir():
             validate_tokenizer(self.tokenizer)
             optimize(
-                fn=partial(tokenize, tokenizer=self.tokenizer),
+                fn=partial(tokenize, tokenizer=self.tokenizer, max_length=self.max_seq_length),
                 inputs=train_files,
                 output_dir=str(self.out_path_train),
                 num_workers=use_workers,
@@ -80,7 +83,7 @@ class TextFiles(DataModule):
         if not Path(self.out_path_val).is_dir():
             validate_tokenizer(self.tokenizer)
             optimize(
-                fn=partial(tokenize, tokenizer=self.tokenizer),
+                fn=partial(tokenize, tokenizer=self.tokenizer, max_length=self.max_seq_length),
                 inputs=val_files,
                 output_dir=str(self.out_path_val),
                 num_workers=use_workers,
@@ -93,12 +96,12 @@ class TextFiles(DataModule):
         train_dataset = StreamingDataset(
             input_dir=str(self.out_path_train),
             item_loader=TokensLoader(block_size=self.max_seq_length),
-            shuffle=True,
+            shuffle=True, #changed
             drop_last=True,
         )
 
         train_dataloader = StreamingDataLoader(
-            train_dataset, batch_size=self.batch_size, pin_memory=True, num_workers=self.num_workers, drop_last=True
+            train_dataset, batch_size=self.batch_size, shuffle=True, pin_memory=True, num_workers=self.num_workers, drop_last=True
         )
         return train_dataloader
 
@@ -118,11 +121,29 @@ class TextFiles(DataModule):
         return val_dataloader
 
 
-def tokenize(filename: str, tokenizer: Tokenizer):
+def tokenize(filename: str, tokenizer: Tokenizer, max_length: int):
     with open(filename, "r", encoding="utf-8") as file:
         text = file.read()
     text = text.strip()
-    yield tokenizer.encode(text, bos=True, eos=False)
+
+    og_ids = tokenizer.encode(text, bos=False, eos=False) #changed bos=False for now, original was bos=True, eos=False
+    yield og_ids   # # comment/uncomment this line to use original tokenization
+
+    # if "tree" in filename.rsplit('/', 1)[-1]:
+    #     special_token = 30002
+    # else:
+    #     special_token = 30001 # everything else has dummy 30001 token
+    # combined_ids = torch.empty(0, dtype=torch.long)
+    # for i in range(0, len(og_ids), max_length - 1):
+    #     chunk = og_ids[i : i + max_length - 1]
+    #     id_chunk = torch.cat([torch.tensor([special_token]), chunk])
+    #     combined_ids = torch.cat([combined_ids, id_chunk])   
+    
+    # yield combined_ids
+
+
+
+
 
 
 def validate_tokenizer(tokenizer: Tokenizer) -> None:

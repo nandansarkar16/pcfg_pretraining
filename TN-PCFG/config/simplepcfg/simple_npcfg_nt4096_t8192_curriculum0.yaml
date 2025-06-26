@@ -2,11 +2,11 @@ device: 0
 save_dir : 'log'
 
 data:
-  train_file: 'data/wikitrain.pickle'
-  val_file: 'data/wikival.pickle'
-  test_file: 'data/wikitest.pickle'
+  train_file: 'data/wiki_50_miltrain.pickle'
+  val_file: 'data/wiki_50_milval.pickle'
+  test_file: 'data/wiki_50_miltest.pickle'
   vocab_type: 'max_size'
-  vocab_size: 50000 # Reduced to 10k which is the number of words that appears around 75 times in the BabyLM 10M train set, same as PTB
+  vocab_size: 30000 
   min_freq: 2
 
 model:
@@ -25,7 +25,7 @@ model:
 train:
   batch_size: 16
   max_epoch: 10 #originally 10
-  max_len: 100
+  max_len: 1024
   #whether to use curriculum learning stragegy.
   curriculum: 0
   start_len: 30
@@ -35,7 +35,7 @@ train:
 
 test:
   batch_size: 16
-  max_tokens: 100 #originally 150
+  max_tokens: 1024 #originally 150
   bucket: 32
   decode: 'mbr'
   sampler: 'batch'

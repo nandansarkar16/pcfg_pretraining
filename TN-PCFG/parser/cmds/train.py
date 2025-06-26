@@ -54,7 +54,7 @@ class Train(CMD):
             log.info(f"Epoch {epoch} / {train_arg.max_epoch}:")
 
 
-            dev_ll = self.evaluate(eval_loader_autodevice)
+            dev_ll = self.evaluate(eval_loader_autodevice)[0] # [0] added here to get the dev likelihood from the tuple (dev_ll, predicted trees), check
             #log.info(f"{'dev f1:':6}   {dev_f1_metric}")
             log.info(f"{'dev ll:':6}   {dev_ll}")
 

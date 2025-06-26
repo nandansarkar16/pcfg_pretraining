@@ -40,27 +40,20 @@ def factorize(tree):
 
 
 def create_dataset(file_name):
-    max_len = 100
+    #max_len = 100 # To avoid CUDA out of memory error NOW: changing to max length in the data processing
     token_count = 0
     line_count = 0
     word_array = []
-    #tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
     with open(file_name, 'r') as f:
         for line in f:
-            #tokens = tokenizer.tokenize(line)
             words = line.split()  
-            if len(words) > max_len: 
-                # num_breaks = len(tokens) // max_len  
-                # for i in range(num_breaks):
-                #     word_tuple = tuple(tokens[i * max_len:(i + 1) * max_len])
-                #     word_array.append(word_tuple)
-                # if len(tokens) % max_len != 0:  # Check if there are remaining tokens
-                #     word_tuple = tuple(tokens[num_breaks * max_len:])
-                #     word_array.append(word_tuple)
-                continue
-            else:
-                word_tuple = tuple(words)
-                word_array.append(word_tuple)
+            # if len(words) > max_len: 
+            #     continue
+            # else:
+                # word_tuple = tuple(words)
+                # word_array.append(word_tuple)
+            word_tuple = tuple(words)
+            word_array.append(word_tuple)
             token_count += len(words)
             line_count += 1
     print(f"Word count for {file_name}: {token_count}")
@@ -76,7 +69,7 @@ if __name__ == '__main__':
     parser.add_argument('--train_file', default='data/ptb-train.txt')
     parser.add_argument('--val_file', default='data/ptb-valid.txt')
     parser.add_argument('--test_file', default='data/ptb-test.txt')
-    parser.add_argument('--cache_path', default='data/wiki')
+    parser.add_argument('--cache_path', default='data/wiki_50_mil')
 
     args = parser.parse_args()
 
