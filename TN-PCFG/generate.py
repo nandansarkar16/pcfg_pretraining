@@ -4,7 +4,8 @@ from parser.helper.data_module import DataModule
 from parser.helper.util import *
 from easydict import EasyDict as edict
 import yaml
-from transformers import GPT2Tokenizer
+from transformers import GPT2TokenizerFast
+import pickle
 
 
 parser = argparse.ArgumentParser(
@@ -23,40 +24,41 @@ log.info("Created the Dataset")
 model = get_model(args.model, dataset)
 log.info("Created the Model")
 
-tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+tokenizer = GPT2TokenizerFast.from_pretrained('/data/cl/u/nsarkar/pcfg_pretrain/litgpt/checkpoints/custom_tokenizer_30k_vocab/saved_tokenizer')
+log.info("Loaded the tokenizer")
 
-model.load_state_dict(torch.load('/data/cl/u/nsarkar/pcfg_pretrain/TN-PCFG/log/simple_npcfg_nt4096_t8192_curriculum0/SNPCFG2024-07-22-18_42_38/best.pt', map_location=args.device))
+model.load_state_dict(torch.load('/data/cl/u/nsarkar/pcfg_pretrain/TN-PCFG/log/simple_npcfg_nt4096_t8192_curriculum0/SNPCFG2024-12-02-14_19_42/best.pt', map_location=args.device)) # 30k vocab size, PCFG trained on 50M tokens
 log.info(f"Loaded trained weights")
 
-data_path = '/data/cl/u/nsarkar/generated_data/pcfg/generated_data.txt'
-tree_data_path = '/data/cl/u/nsarkar/generated_data/pcfg/generated_data_tree.txt'
-if os.path.exists(data_path):
-    with open(data_path, 'r', errors='ignore') as f:
-        text = f.read()
-        total_tokens_generated_so_far = len(tokenizer.tokenize(text))
-else:
-    total_tokens_generated_so_far = 0
 
+total_tokens_generated_so_far = 0
 
-with open(data_path, 'a') as f: #open(tree_data_path, 'a') as f_tree:
-    while total_tokens_generated_so_far < 1000000000:
-        result = model.generate()
-        if result is None:
-            continue
-        vocab_ids, string_tree_rep = result
-        tokens = [dataset.word_vocab.to_word(vocab_id) for vocab_id in vocab_ids]
-        text = ' '.join(tokens) + '\n'
-        tree_string = [
-            (dataset.word_vocab.to_word(word_id) if word_id >= 0 
-            else ('ı' if word_id == -1 else '§'))
-            for word_id in string_tree_rep
-        ]
-        tree_string = ' '.join(tree_string) + '\n'
+# file_ind = 0
+word_data_path = f"/data/cl/u/nsarkar/generated_data/pcfg/randomly_initialized/test/text/pretrain_words.txt"
+tree_data_path = f"/data/cl/u/nsarkar/generated_data/pcfg/randomly_initialized/test/text/pretrain_trees.txt"
 
-        full_text = text + tree_string + '\n'
-        total_tokens_generated_so_far += len(tokenizer.tokenize(text))
-        log.info(f"Total tokens generated so far: {total_tokens_generated_so_far}")
-        f.write(full_text)
-        f.flush()
-        #f_tree.write(tree_string)
+while total_tokens_generated_so_far < 10000000:
+    result = model.generate()
+    if result is None:
+        continue
+    vocab_ids, string_tree_rep = result
+
+    words = [dataset.word_vocab.to_word(vocab_id) for vocab_id in vocab_ids]
+    text = ' '.join(words) + '\n'
+    tree_string = [
+        (dataset.word_vocab.to_word(word_id) if word_id >= 0 
+        else ('ı' if word_id == -1 else '§'))
+        for word_id in string_tree_rep
+    ]
+    tree_string = ' '.join(tree_string) + '\n'
+
+    tokens_generated = len(tokenizer.tokenize(text))
+    total_tokens_generated_so_far += tokens_generated
+    with open(word_data_path, 'a') as f:
+        f.write(text) 
+    with open(tree_data_path, 'a') as f:
+        f.write(tree_string)
+
+    log.info(f"Total tokens generated so far: {total_tokens_generated_so_far}\n")
+
 

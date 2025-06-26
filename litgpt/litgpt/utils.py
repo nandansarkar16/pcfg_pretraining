@@ -317,6 +317,62 @@ def chunked_cross_entropy(
     #   `x.maximum(torch.ones_like(x))` pattern we avoid a cudaStreamSynchronize.
     return torch.cat(loss_chunks).sum() / non_masked_elems.maximum(torch.ones_like(non_masked_elems))
 
+def chunked_cross_entropy_case1_with_chunking(logits, targets, chunk_size=128, ignore_index=30015):
+    logits = logits.reshape(-1, logits.size(-1))
+    targets = targets.reshape(-1)
+    
+    bracket_token_1, bracket_token_2 = 30003, 30004 
+    non_bracket_mask = (targets != bracket_token_1) & (targets != bracket_token_2)
+    targets_masked = targets.clone()
+    targets_masked[~non_bracket_mask] = ignore_index  # Mask out bracket tokens
+    
+    # Split logits and targets into chunks
+    logit_chunks = logits.split(chunk_size)
+    target_chunks = targets_masked.split(chunk_size)
+    
+    #Compute chunked loss without reduction
+    loss_chunks = [
+        torch.nn.functional.cross_entropy(
+            logit_chunk, target_chunk, ignore_index=ignore_index, reduction="none"
+        )
+        for logit_chunk, target_chunk in zip(logit_chunks, target_chunks)
+    ]
+    
+    all_losses = torch.cat(loss_chunks)
+    total_loss = all_losses[non_bracket_mask].sum()  # Only consider non-bracket tokens
+    
+    #Normalize by the number of non-bracket tokens
+    num_non_bracket_tokens = non_bracket_mask.sum().item()
+    return total_loss / max(num_non_bracket_tokens, 1) 
+
+def chunked_cross_entropy_case2_with_chunking(logits, targets, chunk_size=128, ignore_index=30015):
+    logits = logits.reshape(-1, logits.size(-1))
+    targets = targets.reshape(-1)
+    
+    bracket_token_1, bracket_token_2 = 30003, 30004
+    non_bracket_mask = (targets != bracket_token_1) & (targets != bracket_token_2)
+    
+    # Split logits and targets into chunks
+    logit_chunks = logits.split(chunk_size)
+    target_chunks = targets.split(chunk_size)
+    
+    # Compute chunked loss without reduction
+    loss_chunks = [
+        torch.nn.functional.cross_entropy(
+            logit_chunk, target_chunk, ignore_index=ignore_index, reduction="none"
+        )
+        for logit_chunk, target_chunk in zip(logit_chunks, target_chunks)
+    ]
+    
+    # Concatenate losses
+    all_losses = torch.cat(loss_chunks)
+    total_loss = all_losses.sum()  # Include all tokens (brackets and non-brackets) in the loss
+    
+    # Normalize only by the number of non-bracket tokens
+    num_non_bracket_tokens = non_bracket_mask.sum().item()
+    return total_loss / max(num_non_bracket_tokens, 1) 
+
+
 
 def map_old_state_dict_weights(state_dict: Dict, mapping: Mapping, prefix: str) -> Dict:
     for checkpoint_name, attribute_name in mapping.items():

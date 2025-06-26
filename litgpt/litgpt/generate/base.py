@@ -26,6 +26,7 @@ from litgpt.utils import (
     load_checkpoint
 )
 
+import random
 
 def multinomial_num_samples_1(probs: torch.Tensor) -> torch.Tensor:
     if torch._dynamo.is_compiling():
@@ -55,7 +56,7 @@ def sample(
 ) -> torch.Tensor:
     if top_p < 0.0 or top_p > 1.0:
         raise ValueError(f"top_p must be in [0, 1], got {top_p}")
-    logits = logits[0, -1]
+    logits = logits[0][0, -1] # CHANGED: added [0]
     # optionally crop the logits to only the top k options
     if top_k is not None:
         v, i = torch.topk(logits, min(top_k, logits.size(-1)))
@@ -141,6 +142,7 @@ def generate(
             model, input_pos, token.view(1, -1), temperature=temperature, top_k=top_k, top_p=top_p
         ).clone()
         tokens.append(token)
+        # fabric.print(f"TOKEN ID: {token}, TOKEN: {tokenizer.decode(token)}") #CHANGED
         if token == eos_id:
             break
         input_pos = input_pos.add_(1)
@@ -220,7 +222,7 @@ def main(
     checkpoint_path = checkpoint_dir / "lit_model.pth"
     check_file_size_on_cpu_and_warn(checkpoint_path, fabric.device)
 
-    tokenizer = Tokenizer(checkpoint_dir)
+    tokenizer = Tokenizer(Path("/data/cl/u/nsarkar/pcfg_pretrain/litgpt/checkpoints/custom_tokenizer_30k_vocab/saved_tokenizer")) # CHANGED old line:  tokenizer = Tokenizer(checkpoint_dir)
     prompt_style = (
         load_prompt_style(checkpoint_dir) if has_prompt_style(checkpoint_dir) else PromptStyle.from_config(config)
     )
@@ -228,6 +230,7 @@ def main(
     prompt = prompt_style.apply(prompt)
     encoded = tokenizer.encode(prompt, device=fabric.device)
     prompt_length = encoded.size(0)
+    max_new_tokens = random.randint(40, 160) #CHANGED
     max_returned_tokens = prompt_length + max_new_tokens
 
     fabric.print(f"Loading model {str(checkpoint_path)!r} with {config.__dict__}", file=sys.stderr)
@@ -255,14 +258,17 @@ def main(
     load_checkpoint(fabric, model, checkpoint_path)
     fabric.print(f"Time to load the model weights: {time.perf_counter() - t0:.02f} seconds.", file=sys.stderr)
 
-    L.seed_everything(1234)
+    L.seed_everything(7)
     for i in range(num_samples):
         t0 = time.perf_counter()
         y = generate(model, encoded, max_returned_tokens, temperature=temperature, top_k=top_k, top_p=top_p, eos_id=tokenizer.eos_id)
         t = time.perf_counter() - t0
         for block in model.transformer.h:
             block.attn.kv_cache.reset_parameters()
-        fabric.print(tokenizer.decode(y))
+        text = tokenizer.decode(y) # CHANGED
+        fabric.print(f"NUMBER {i}, TEXT: {text}", flush=True)
+        with open('/data/cl/u/nsarkar/generated_data/lm/random/generated_text_7.txt', 'a') as f:
+            f.write(text)  # END OF CHANGED
         tokens_generated = y.size(0) - prompt_length
         fabric.print(
             f"Time for inference {i + 1}: {t:.02f} sec total, {tokens_generated / t:.02f} tokens/sec", file=sys.stderr

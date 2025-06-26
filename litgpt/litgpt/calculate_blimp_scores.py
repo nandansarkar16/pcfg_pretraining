@@ -1,13 +1,14 @@
 import torch
 from torch.utils.data import DataLoader, Dataset
-from transformers import GPT2Tokenizer
+from transformers import GPT2TokenizerFast
 import os
 import json
 
 class BLiMPDataset(Dataset):
     def __init__(self, blimp_data, max_length):
         self.blimp_data = blimp_data
-        self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2")  
+
+        self.tokenizer = GPT2TokenizerFast.from_pretrained('/data/cl/u/nsarkar/pcfg_pretrain/litgpt/checkpoints/custom_tokenizer_30k_vocab/saved_tokenizer')
         self.tokenizer.pad_token = self.tokenizer.eos_token
         self.max_length = max_length
 
@@ -54,38 +55,43 @@ def evaluate_blimp_model(blimp_loader, model, device, pad_token_id):
     with torch.no_grad():
         for input_ids1, targets1, input_ids2, targets2 in blimp_loader:
             input_ids1, targets1 = input_ids1.to(device), targets1.to(device)
-            input_ids2, targets2 = input_ids2.to(device), targets2.to(device)
 
-            logits1 = model(input_ids1)
-            logits2 = model(input_ids2)
-
+            logits1 = model(input_ids1)[0]
             # Reshaping logits to [batch_size*seq_len, vocab_size] and targets to [batch_size*seq_len]
             logits1 = logits1.view(-1, logits1.size(-1))
-            logits2 = logits2.view(-1, logits2.size(-1))
             targets1 = targets1.view(-1)
-            targets2 = targets2.view(-1)
-
             loss1 = torch.nn.functional.cross_entropy(logits1, targets1, ignore_index=pad_token_id, reduction='none')
-            loss2 = torch.nn.functional.cross_entropy(logits2, targets2, ignore_index=pad_token_id, reduction='none')
-
-            # Reshaping targets back to [batch_size, seq_len]
+            #Reshaping targets back to [batch_size, seq_len]
             targets1 = targets1.view(input_ids1.size(0), -1)
-            targets2 = targets2.view(input_ids2.size(0), -1)
-
             # Calculate sequence lengths by counting non-padding tokens
             sequence_length1 = (targets1 != pad_token_id).sum(dim=1)
-            sequence_length2 = (targets2 != pad_token_id).sum(dim=1)
-
-            # Sum the per-token losses
+            #Sum the per-token losses
             loss1 = loss1.view(input_ids1.size(0), -1).sum(dim=1)
-            loss2 = loss2.view(input_ids2.size(0), -1).sum(dim=1)
-
             # Average the summed losses by sequence length
             loss1 = loss1 / sequence_length1
+
+            input_size = input_ids1.size(0)
+
+            del input_ids1, targets1, logits1
+            torch.cuda.empty_cache()  # Frees unused GPU memory
+
+            input_ids2, targets2 = input_ids2.to(device), targets2.to(device)
+            logits2 = model(input_ids2)[0]
+            logits2 = logits2.view(-1, logits2.size(-1))
+            targets2 = targets2.view(-1)
+            loss2 = torch.nn.functional.cross_entropy(logits2, targets2, ignore_index=pad_token_id, reduction='none')
+            targets2 = targets2.view(input_ids2.size(0), -1)
+            sequence_length2 = (targets2 != pad_token_id).sum(dim=1)
+            loss2 = loss2.view(input_ids2.size(0), -1).sum(dim=1)
             loss2 = loss2 / sequence_length2
 
             correct += (loss1 < loss2).sum().item()
-            total += input_ids1.size(0)
+            total += input_size
+
+            del input_ids2, targets2, logits2
+            torch.cuda.empty_cache()  #Frees unused GPU memory again
+
+
 
     accuracy = correct / total
     return accuracy
@@ -93,7 +99,7 @@ def evaluate_blimp_model(blimp_loader, model, device, pad_token_id):
 
 def eval_all_blimp(model, max_seq_length):
     model.eval()
-    dataset_path = '/data/cl/u/nsarkar/litgpt/litgpt/blimp_data'
+    dataset_path = '/data/cl/u/nsarkar/pcfg_pretrain/litgpt/litgpt/blimp_data'
     blimp_data = load_blimp_data(dataset_path)
     max_length = max_seq_length
     batch_size = 32

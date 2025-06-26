@@ -27,6 +27,8 @@ from litgpt.utils import (
     capture_hparams,
     choose_logger,
     chunked_cross_entropy,
+    chunked_cross_entropy_case1_with_chunking,
+    chunked_cross_entropy_case2_with_chunking,
     copy_config_files,
     extend_checkpoint_dir,
     find_resume_path,
@@ -42,7 +44,6 @@ from litgpt.utils import (
 
 # For BLiMP evals
 from litgpt.calculate_blimp_scores import eval_all_blimp
-
 
 def setup(
     model_name: str,
@@ -127,7 +128,7 @@ def setup(
     tokenizer = Tokenizer(tokenizer_dir) if tokenizer_dir is not None else None
 
     logger = choose_logger(
-        logger_name, out_dir, name=f"pretrain_wiki-{config.name}", resume=bool(resume), log_interval=train.log_interval
+        logger_name, out_dir, name=f"pretrain_wiki_50M-{config.name}", resume=bool(resume), log_interval=train.log_interval
     )
 
     if devices > 1:
@@ -205,7 +206,16 @@ def main(
     train_dataloader, val_dataloader = fabric.setup_dataloaders(train_dataloader, val_dataloader)
 
     if initial_checkpoint_dir:
-        fabric.load_raw(initial_checkpoint_dir / "lit_model2.pth", model) # Modified       
+        full_checkpoint = torch.load(str(initial_checkpoint_dir / "lit_model.pth"), mmap=True)
+        loaded_state_dict = full_checkpoint["model"]
+        torch.save(loaded_state_dict, initial_checkpoint_dir / "lit_model2.pth")
+        fabric.load_raw(initial_checkpoint_dir / "lit_model2.pth", model)
+        
+        # Reinitialize input and output embeddings
+        fabric.print(f"Pretrained: {model.transformer.wte}, {model.lm_head}")
+        model._init_weights(model.transformer.wte)  # Reset input embeddings
+        model._init_weights(model.lm_head)         # Reset output embeddings
+        fabric.print(f"Reinitialized: {model.transformer.wte}, {model.lm_head}")
     state = {
         "model": model,
         "optimizer": optimizer,
@@ -257,7 +267,8 @@ def fit(
     with torch.device("meta"):
         meta_model = GPT(model.config)
         x = torch.randint(0, 1, (train.micro_batch_size, meta_model.max_seq_length))
-        model_fwd = lambda: meta_model(x)
+        model_fwd = lambda: meta_model(x)[0]
+        # Change the line below this later
         model_loss = lambda y: chunked_cross_entropy(y, x, chunk_size=0)
         measured_flops = measure_flops(meta_model, model_fwd, model_loss)
         fabric.print(f"Measured TFLOPs: {measured_flops * fabric.world_size / 1e12:.2f}")
@@ -281,8 +292,8 @@ def fit(
     curr_epoch = 0
     min_val_loss = float("inf")
     for train_data in train_iterator:
-        if state["iter_num"] >= max_iters:
-            break
+        if train_iterator.epoch >= 5:
+            break 
 
         # determine and set the learning rate for this iteration
         lr = get_lr(optimizer.defaults["lr"], state["iter_num"], warmup_iters, max_iters, train.min_lr)
@@ -294,11 +305,29 @@ def fit(
 
         input_ids = train_data[:, 0 : model.max_seq_length].contiguous().long()
         targets = train_data[:, 1 : (model.max_seq_length + 1)].contiguous().long()
-
         is_accumulating = state["iter_num"] % train.gradient_accumulation_iters(devices) != 0
         with fabric.no_backward_sync(model, enabled=is_accumulating):
-            logits = model(input_ids)
-            loss = chunked_cross_entropy(logits, targets)
+            logits, attention_weight_list = model(input_ids) #, train_data['matrix'])
+        
+            # Final attention layer averaged over all heads
+            # final_attention_layer = attention_weight_list[-1].mean(dim=1)
+            # Get first head of the first layer
+            #attention_layer = attention_weight_list[0][:, 0, :, :]
+            # average the first head from each layer
+            # attention_layer = torch.stack([attention_weight_list[i][:, 0, :, :] for i in range(len(attention_weight_list))], dim=0).mean(dim=0)
+
+            # average the first head from first 3 layers
+            #attention_layer = torch.stack([attention_weight_list[i][:, 0, :, :] for i in range(3)], dim=0).mean(dim=0)
+            #supervision_matrix = train_data['matrix']
+            #lambda_ = 0.10 # larger lambda penalizes the model more for deviating from the supervision matrix
+            #supervision_loss = lambda_ * torch.sum((attention_layer - supervision_matrix) ** 2)
+            supervision_loss = 0
+            loss = chunked_cross_entropy(logits, targets) #+ supervision_loss
+            case1_loss = chunked_cross_entropy_case1_with_chunking(logits, targets)
+            case2_loss = chunked_cross_entropy_case2_with_chunking(logits, targets)
+                
+            #fabric.print(f"Supervision loss: {supervision_loss}, Loss: {loss}, Total loss: {total_loss}")
+            fabric.print(f"Loss: {loss}")#, Supervision loss: {supervision_loss}, Cross entropy loss: {loss - supervision_loss}")
             fabric.backward(loss / train.gradient_accumulation_iters(devices))
 
         running_loss.update(loss.detach())
@@ -321,6 +350,10 @@ def fit(
             )
             metrics = {
                 "loss": loss,
+                "case1_loss": case1_loss,
+                "case2_loss": case2_loss,
+                "supervision_loss": supervision_loss,
+                "cross_entropy_loss": loss - supervision_loss,
                 "iter": state["iter_num"],
                 "step": state["step_count"],
                 "epoch": train_iterator.epoch,
@@ -344,7 +377,6 @@ def fit(
             )
             throughput_metrics = throughput.compute()
             metrics.update(throughput_metrics)
-            #fabric.log_dict(metrics, step=state["iter_num"] - 1)
             fabric.log_dict(metrics, step=metrics["total_tokens"])
 
         if val_dataloader is not None and not is_accumulating and state["step_count"] % eval.interval == 0:
@@ -355,19 +387,20 @@ def fit(
             td = time.perf_counter() - t0
             fabric.print(f"iter {state['iter_num']}: val loss {val_loss:.4f}, val time: {td * 1000:.2f} ms")
             metrics = {"val_loss": val_loss, "val_ppl": math.exp(val_loss)}
-            #fabric.log_dict(metrics, step=state["iter_num"] - 1)
             fabric.log_dict(metrics, step=total_tokens_print)
             fabric.barrier()
-        
+
+
         # Blimp Evaluations
-        if curr_epoch != train_iterator.epoch:
-            curr_epoch = train_iterator.epoch
-            total_tokens_print = (state["iter_num"] * train.micro_batch_size * model.max_seq_length * fabric.world_size)
-            fabric.print(f"Evaluating BLiMP ...")
-            metrics = eval_all_blimp(model, model.max_seq_length)
-            fabric.print(f"BLiMP scores: {metrics}")
-            fabric.log_dict(metrics, step=total_tokens_print)
-            fabric.barrier()
+        # if curr_epoch != train_iterator.epoch:
+        #     curr_epoch = train_iterator.epoch
+        #     total_tokens_print = (state["iter_num"] * train.micro_batch_size * model.max_seq_length * fabric.world_size)
+        #     fabric.print(f"Evaluating BLiMP ...")
+        #     metrics = eval_all_blimp(model, model.max_seq_length)
+        #     fabric.print(f"BLiMP scores: {metrics}")
+        #     fabric.log_dict(metrics, step=total_tokens_print)
+        #     fabric.barrier()
+        #     model.train() 
 
         if train.save_interval is not None and not is_accumulating and state["step_count"] % train.save_interval == 0:
             save_checkpoint(fabric, state, tokenizer_dir, out_dir / f"step-{state['step_count']:08d}" / "lit_model.pth")
@@ -379,11 +412,11 @@ def fit(
         
 
     # Final validation
-    if eval.final_validation:
-        val_loss = validate(fabric, model, val_dataloader, max_iters=eval.max_iters)
-        metrics = {"val_loss": val_loss, "val_ppl": math.exp(val_loss)}
-        fabric.log_dict(metrics, step=state["iter_num"])
-        fabric.print(f"Final evaluation | val loss: {val_loss.item():.3f} | val ppl: {math.exp(val_loss):.3f}")
+    # if eval.final_validation:
+    #     val_loss = validate(fabric, model, val_dataloader, max_iters=eval.max_iters)
+    #     metrics = {"val_loss": val_loss, "val_ppl": math.exp(val_loss)}
+    #     fabric.log_dict(metrics, step=state["iter_num"])
+    #     fabric.print(f"Final evaluation | val loss: {val_loss.item():.3f} | val ppl: {math.exp(val_loss):.3f}")
 
 
 @torch.no_grad()
@@ -397,9 +430,9 @@ def validate(fabric: L.Fabric, model: nn.Module, val_dataloader: DataLoader, max
     for k, batch in enumerate(val_dataloader):
         if k >= max_iters:
             break
-        input_ids = batch[:, 0 : model.max_seq_length].contiguous().long()
-        targets = batch[:, 1 : (model.max_seq_length + 1)].contiguous().long()
-        logits = model(input_ids)
+        input_ids = batch[:, 0 : model.max_seq_length].contiguous().long() # ADDED HERE (for later check)
+        targets = batch[:, 1 : (model.max_seq_length + 1)].contiguous().long() # ADDED HERE (for later check)
+        logits, attention_weight_list = model(input_ids)
         loss = chunked_cross_entropy(logits, targets)
         losses.append(loss)
 

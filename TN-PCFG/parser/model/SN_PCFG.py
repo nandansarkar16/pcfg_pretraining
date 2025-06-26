@@ -112,7 +112,6 @@ class Simple_N_PCFG(nn.Module):
         left = left.softmax(-2)
         right = right.softmax(-2)
 
-        max_len = torch.randint(35, 151, (1,)).item()
         first = torch.multinomial(roots, 1).item() # gets the first non-terminal
         string = [first]
         tree_string_list = [first]
@@ -139,26 +138,16 @@ class Simple_N_PCFG(nn.Module):
 
             string = new_string
             if len(string) > 150:
-                return None
-
-
-        # Replace all left over non terminals with terminals (Dont need this anymore since cutting out sequences longer than max length)
-        # left_p =  left[self.NT:, :].softmax(-2)
-        # right_p = right[self.NT:, :].softmax(-2)
-        # for s in string:
-        #     if s < self.NT:
-        #         left_child = torch.multinomial(left_p[:, s], 1).item()
-        #         right_child = torch.multinomial(right_p[:, s], 1).item()
-        #         string = string[:s] + [left_child, right_child] + string[s+1:]
+                return None    
         
-            
         # Convert terminal indices to words and create string tree representation
-        words = []
+        words = [] 
         for s in string:
             # since s is a terminal, we subtract NT to get the correct index since term_prob is indexed from 0 and only contains terminals
             word = torch.multinomial(term_prob[s - self.NT], 1).item() 
             words.append(word)
             tree_string_list[tree_string_list.index(s)] = word
+                    
         return words, tree_string_list
 
     def loss(self, input):

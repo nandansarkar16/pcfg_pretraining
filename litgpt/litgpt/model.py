@@ -70,7 +70,7 @@ class GPT(nn.Module):
         elif isinstance(module, nn.Embedding):
             torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
 
-    def forward(self, idx: torch.Tensor, input_pos: Optional[torch.Tensor] = None) -> torch.Tensor:
+    def forward(self, idx: torch.Tensor, distance_matrices: Optional[torch.Tensor] = None, input_pos: Optional[torch.Tensor] = None) -> torch.Tensor:
         T = idx.size(1)
         if self.max_seq_length < T:
             raise ValueError(f"Cannot forward sequence of length {T}, max seq length is only {self.max_seq_length}.")
@@ -89,11 +89,15 @@ class GPT(nn.Module):
         x = self.transformer.wte(idx)  # token embeddings of shape (b, t, n_embd)
         if self.config.scale_embeddings:
             x = x * (self.config.n_embd**0.5)
+        
+        attention_weights_list = []
 
         for block in self.transformer.h:
-            x = block(x, cos, sin, mask, input_pos)
+            x, attention_weights = block(x, cos, sin, mask, distance_matrices, input_pos)
+            attention_weights_list.append(attention_weights)
         x = self.transformer.ln_f(x)
-        return self.lm_head(x)  # (b, t, vocab_size)
+        logits = self.lm_head(x)  # (b, t, vocab_size)
+        return logits, attention_weights_list
 
     @classmethod
     def from_name(cls, name: str, **kwargs: Any) -> Self:
@@ -158,6 +162,7 @@ class Block(nn.Module):
         cos: torch.Tensor,
         sin: torch.Tensor,
         mask: Optional[torch.Tensor] = None,
+        distance_matrices: Optional[torch.Tensor] = None,
         input_pos: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
         """
@@ -177,7 +182,7 @@ class Block(nn.Module):
         """
 
         x_normed = self.norm_1(x)
-        attention_output = self.attn(x_normed, cos, sin, mask, input_pos)
+        attention_output, attention_weights = self.attn(x_normed, cos, sin, mask, distance_matrices, input_pos)
 
         if self.config.parallel_residual:
             x_normed = x_normed if self.config.shared_attention_norm else self.norm_2(x)
@@ -185,7 +190,7 @@ class Block(nn.Module):
         else:
             x = attention_output + x
             x = self.mlp(self.norm_2(x)) + x
-        return x
+        return x, attention_weights
 
 
 class CausalSelfAttention(nn.Module):
@@ -208,6 +213,7 @@ class CausalSelfAttention(nn.Module):
         cos: torch.Tensor,
         sin: torch.Tensor,
         mask: Optional[torch.Tensor] = None,
+        distance_matrices: Optional[torch.Tensor] = None,
         input_pos: Optional[torch.Tensor] = None,
     ) -> torch.Tensor:
         B, T, C = x.size()  # batch size, sequence length, embedding dimensionality (n_embd)
@@ -244,21 +250,38 @@ class CausalSelfAttention(nn.Module):
                 raise TypeError("You need to call `gpt.set_kv_cache()`")
             k, v = self.kv_cache(input_pos, k, v)
 
-        y = self.scaled_dot_product_attention(q, k, v, mask)
+        y, attention_weights = self.scaled_dot_product_attention(q, k, v, mask, distance_matrices)
 
         y = y.reshape(B, T, self.config.head_size * self.config.n_head)  # re-assemble all head outputs side by side
 
         # output projection
-        return self.proj(y)
+        return self.proj(y), attention_weights
 
     def scaled_dot_product_attention(
-        self, q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, mask: Optional[torch.Tensor] = None
+        self, q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, mask: Optional[torch.Tensor] = None, distance_matrices: Optional[torch.Tensor] = None
     ) -> torch.Tensor:
         scale = 1.0 / math.sqrt(self.config.head_size)
-        y = torch.nn.functional.scaled_dot_product_attention(
-            q, k, v, attn_mask=mask, dropout_p=0.0, scale=scale, is_causal=mask is None
-        )
-        return y.transpose(1, 2)
+        # y = torch.nn.functional.scaled_dot_product_attention(
+        #     q, k, v, attn_mask=mask, dropout_p=0.0, scale=scale, is_causal=mask is None
+        # )
+        
+        L, S = q.size(-2), k.size(-2)
+        causal_mask = torch.tril(torch.ones(L, S, dtype=torch.bool, device=q.device))
+        if mask is None:
+            mask = causal_mask
+        # Manual calculation of the scores for the attention weights to return the weights
+        scores = torch.matmul(q, k.transpose(-2, -1)) * scale  # Shape: (batch_size, n_heads, seq_len, seq_len)
+        scores = scores.masked_fill(mask == 0, float('-inf'))
+        attention_weights = torch.softmax(scores, dim=-1)
+        if distance_matrices is not None:
+            # set first head to be the distance matrix
+            modified_attention_weights = attention_weights.clone()
+            modified_attention_weights[:, 0] = distance_matrices
+            y = torch.matmul(modified_attention_weights, v)
+            return y.transpose(1, 2), modified_attention_weights
+        
+        y = torch.matmul(attention_weights, v)
+        return y.transpose(1, 2), attention_weights
 
     def build_kv_cache(
         self,

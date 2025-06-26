@@ -48,6 +48,15 @@ class DataModule():
         train_dataset.add_seq_len(field_name="word", new_field_name="seq_len")
         val_dataset.add_seq_len(field_name="word", new_field_name="seq_len")
         test_dataset.add_seq_len(field_name="word", new_field_name="seq_len")
+        
+        # ADDED ORGINAL WORD
+        # Convert original word tuple to list
+        train_word_list = [list(word) if isinstance(word, tuple) else word for word in train_data['word']]
+        val_word_list = [list(word) if isinstance(word, tuple) else word for word in val_data['word']]
+        test_word_list = [list(word) if isinstance(word, tuple) else word for word in test_data['word']]
+        train_dataset.add_field("orginal_word", train_word_list)
+        val_dataset.add_field("orginal_word", val_word_list)
+        test_dataset.add_field("orginal_word", test_word_list)
 
 
         def clean_word(words):
@@ -74,9 +83,11 @@ class DataModule():
         self.test_dataset = test_dataset.drop(lambda x: x['seq_len']==1, inplace=True)
 
         self.word_vocab = word_vocab
-        self.train_dataset.set_input("word","seq_len")
-        self.val_dataset.set_input("word","seq_len")
-        self.test_dataset.set_input("word","seq_len")
+
+        # ADDED ORGINAL WORD
+        self.train_dataset.set_input("word","seq_len", "orginal_word")
+        self.val_dataset.set_input("word","seq_len", "orginal_word")
+        self.test_dataset.set_input("word","seq_len", "orginal_word") 
 
         # self.val_dataset.set_target('gold_tree')
         # self.test_dataset.set_target("gold_tree",)
