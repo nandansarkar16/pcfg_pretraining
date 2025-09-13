@@ -44,3 +44,22 @@ bash ./TN-PCFG/train_pcfg.sh
 ```bash
 bash ./TN-PCFG/generate_data_from_pcfg.sh
 ```
+
+**Pretraining and fine-tuning language models**
+
+Example scripts for pretraining and fine-tuning can be found in:
+```bash
+./litgpt/scripts/train_50M
+```
+
+**BLiMP evaluation after training**
+
+BLiMP evaluation is run automatically at the end of each epoch during training.  
+For post-training evaluation, run:
+```bash
+bash ./litgpt/calc_blimp_after_train.sh
+```
+Be sure to update the model paths in:
+```bash
+./litgpt/calc_blimp_after_train_test.py
+```
