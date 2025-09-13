@@ -1,4 +1,3 @@
-````markdown
 This repo uses the repositories [litgpt](https://github.com/Lightning-AI/litgpt) and [TN-PCFG](https://github.com/sustcsonglin/TN-PCFG) with a few necessary modifications and additional files.  
 
 📄 [Read the project writeup! (PDF)](EnhancingPretrainingDataEfficiencyUsingPCFGs_writeup.pdf)
@@ -6,10 +5,11 @@ This repo uses the repositories [litgpt](https://github.com/Lightning-AI/litgpt)
 ---
 
 ## Setup
+
 ```bash
 git clone https://github.com/nandansarkar16/pcfg_pretraining.git
 cd pcfg_pretraining
-````
+```
 
 ## Virtual Environments
 
@@ -43,7 +43,4 @@ bash ./TN-PCFG/train_pcfg.sh
 
 ```bash
 bash ./TN-PCFG/generate_data_from_pcfg.sh
-```
-
-```
 ```
